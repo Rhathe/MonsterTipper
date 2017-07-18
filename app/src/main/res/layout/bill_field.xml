@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto">
+	<data>
+		<variable name="bill" type="com.rhathe.monstertipper.models.Bill"/>
+		<variable name="field" type="java.math.BigDecimal"/>
+		<variable name="fieldName" type="String"/>
+	</data>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="80dp"
+			android:textAlignment="center"
+			android:padding="5dp"
+			android:text="@{fieldName + `: ` + field.toString()}"/>
+		<Space
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			android:layout_weight="1" />
+		<EditText
+			android:id="@+id/total"
+			android:layout_width="200dp"
+			android:layout_height="80dp"
+			android:layout_gravity="end"
+			android:inputType="numberDecimal"
+			android:onFocusChangeListener="@{(_, change) -> bill.setCurrentFieldOnChange(fieldName, change)}"
+			android:text="@={bill.toDollars(fieldName, field)}"/>
+	</LinearLayout>
+</layout>

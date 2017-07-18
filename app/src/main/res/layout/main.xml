@@ -14,7 +14,7 @@
 		tools:context="com.rhathe.monstertipper.ui.Main">
 
 		<include
-			app:bill="@{bill}"
+			app:bill="@={bill}"
 			layout="@layout/content_main"/>
 
 		<android.support.design.widget.FloatingActionButton

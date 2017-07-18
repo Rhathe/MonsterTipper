@@ -15,11 +15,19 @@ class Bill: Observable {
 			registry.notifyChange(this, BR.total)
 		}
 
-	var base: Int = 0
-	var tip: Number = 0.0
-	var tax: Number = 0.0
+	@get:Bindable
+	var base: BigDecimal = BigDecimal.ZERO.setScale(2)
+		set(base) {
+			field = base.setScale(2, BigDecimal.ROUND_UP)
+			registry.notifyChange(this, BR.base)
+		}
+
+	var tip: BigDecimal = BigDecimal(15).setScale(0)
+	var tax: BigDecimal = BigDecimal(8.875).setScale(3)
 	var tipOnTax: Boolean = false
+
 	val fieldMap = HashMap<String, String>()
+	var currentField: String = ""
 
 	@Ignore
 	private val registry = PropertyChangeRegistry()
@@ -39,6 +47,51 @@ class Bill: Observable {
 	@InverseMethod("toDollars")
 	fun toBigDecimal(field: String, s: String): BigDecimal {
 		fieldMap[field] = s
-		return if (s.isNotBlank()) BigDecimal(s) else BigDecimal.ZERO
+
+		var ret = BigDecimal.ZERO
+		try {
+			ret = BigDecimal(s)
+		} catch(e: Exception) {}
+
+		adjustEverythingElse(field, ret)
+		return ret
+	}
+
+	fun adjustEverythingElse(field: String, n: BigDecimal) {
+		listOf("total", "base", "tax", "tip").forEach({x -> if (x != currentField) fieldMap.remove(x)})
+		if (currentField == "base") calculateFromBase(n)
+		else if (currentField == "total") calculateFromTotal(n)
+		else if (currentField == "tip") calculateFromTip(n)
+		else if (currentField == "tax") calculateFromTax(n)
+	}
+
+	fun setCurrentFieldOnChange(s: String, change: Boolean) {
+		if (change) currentField = s
+		else if (currentField == s) currentField = ""
+	}
+
+	fun calculateTotal(base: BigDecimal = this.base, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {
+		total = base * (BigDecimal.ONE + ((tax + tip) / BigDecimal(100)))
+		Log.e("total", total.toString())
+	}
+
+	fun calculateBase(total: BigDecimal = this.total, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {
+		base = total / (BigDecimal.ONE + ((tax + tip) / BigDecimal(100)))
+	}
+
+	fun calculateFromBase(base: BigDecimal) {
+		calculateTotal(base = base)
+	}
+
+	fun calculateFromTotal(total: BigDecimal) {
+		calculateBase(total = total)
+	}
+
+	fun calculateFromTax(tax: BigDecimal) {
+		calculateTotal(tax = tax)
+	}
+
+	fun calculateFromTip(tip: BigDecimal) {
+		calculateTotal(tip = tip)
 	}
 }

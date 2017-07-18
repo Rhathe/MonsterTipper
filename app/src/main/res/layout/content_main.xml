@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto">
 	<data>
 		<variable name="bill" type="com.rhathe.monstertipper.models.Bill"/>
 	</data>
@@ -9,29 +10,29 @@
 		android:layout_height="match_parent"
 		android:orientation="vertical">
 
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="80dp"
-				android:textAlignment="center"
-				android:padding="5dp"
-				android:text="@{bill.total.toString()}"/>
-			<Space
-				android:layout_width="0dp"
-				android:layout_height="0dp"
-				android:layout_weight="1" />
-			<EditText
-				android:id="@+id/total"
-				android:layout_width="200dp"
-				android:layout_height="80dp"
-				android:layout_gravity="end"
-				android:inputType="numberDecimal"
-				android:text="@={bill.toDollars(`total`, bill.total)}"/>
-		</LinearLayout>
+		<include
+			app:bill="@={bill}"
+			app:field="@={bill.total}"
+			app:fieldName="@{`total`}"
+			layout="@layout/bill_field"/>
 
+		<include
+			app:bill="@={bill}"
+			app:field="@={bill.tip}"
+			app:fieldName="@{`tip`}"
+			layout="@layout/bill_field"/>
+
+		<include
+			app:bill="@={bill}"
+			app:field="@={bill.tax}"
+			app:fieldName="@{`tax`}"
+			layout="@layout/bill_field"/>
+
+		<include
+			app:bill="@={bill}"
+			app:field="@={bill.base}"
+			app:fieldName="@{`base`}"
+			layout="@layout/bill_field"/>
 
 		<GridLayout
 			android:id="@+id/tipper_grid"
