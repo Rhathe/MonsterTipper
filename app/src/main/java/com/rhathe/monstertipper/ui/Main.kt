@@ -1,19 +1,26 @@
-package com.rhathe.monstertipper
+package com.rhathe.monstertipper.ui
 
+import android.databinding.DataBindingUtil
+import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.rhathe.monstertipper.BR
+import com.rhathe.monstertipper.R
+import com.rhathe.monstertipper.models.Bill
 
 import kotlinx.android.synthetic.main.main.*
 
 class Main : AppCompatActivity() {
+	var bill: Bill = Bill()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.main)
-		setSupportActionBar(toolbar)
+
+		val binding: ViewDataBinding = DataBindingUtil.setContentView(this, R.layout.main)
+		binding.setVariable(BR.bill, bill)
 
 		fab.setOnClickListener { view ->
 			Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -35,5 +42,9 @@ class Main : AppCompatActivity() {
 			R.id.action_settings -> true
 			else -> super.onOptionsItemSelected(item)
 		}
+	}
+
+	fun newBill() {
+		bill = Bill()
 	}
 }

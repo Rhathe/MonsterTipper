@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	app:layout_behavior="@string/appbar_scrolling_view_behavior"
-	tools:context="com.rhathe.monstertipper.Main"
-	tools:showIn="@layout/main">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+	<data>
+		<variable name="bill" type="com.rhathe.monstertipper.models.Bill"/>
+	</data>
 
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="Hello World!"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toTopOf="parent"/>
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="80dp"
+				android:textAlignment="center"
+				android:padding="5dp"
+				android:text="@{bill.total.toString()}"/>
+			<Space
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:layout_weight="1" />
+			<EditText
+				android:id="@+id/total"
+				android:layout_width="200dp"
+				android:layout_height="80dp"
+				android:layout_gravity="end"
+				android:inputType="numberDecimal"
+				android:text="@={bill.toDollars(`total`, bill.total)}"/>
+		</LinearLayout>
+
+
+		<GridLayout
+			android:id="@+id/tipper_grid"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:columnCount="3"/>
+
+	</LinearLayout>
+</layout>
