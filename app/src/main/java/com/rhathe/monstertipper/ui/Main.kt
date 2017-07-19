@@ -1,21 +1,29 @@
 package com.rhathe.monstertipper.ui
 
+import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.text.Layout
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.GridLayout
+import android.widget.LinearLayout
 import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.R
-import com.rhathe.monstertipper.models.Bill
 import com.rhathe.monstertipper.models.Meal
+import com.rhathe.monstertipper.models.Tipper
+import java.util.*
 
-import kotlinx.android.synthetic.main.main.*
 
 class Main : AppCompatActivity() {
 	var meal = Meal()
+	val tipperLayoutMap = mutableMapOf<Tipper, View>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -43,6 +51,25 @@ class Main : AppCompatActivity() {
 	}
 
 	fun setTipperButtons() {
+		meal.onAddTippers = { x -> onAddTippers(x) }
+		meal.onRemoveTippers = { x, y -> onRemoveTippers(x, y) }
+	}
 
+	fun onAddTippers(tipper: Tipper) {
+		val inflater = LayoutInflater.from(applicationContext)
+		val grid = findViewById<View>(R.id.tipper_grid) as GridLayout
+
+		val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater, R.layout.tipper_item, grid, false)
+		binding.setVariable(BR.tipper, tipper)
+
+		val layout = binding.root as LinearLayout
+		layout.setOnClickListener { _ -> }
+
+		grid.addView(layout)
+	}
+
+	fun onRemoveTippers(tipper: Tipper, index: Int) {
+		val grid = findViewById<View>(R.id.tipper_grid) as GridLayout
+		grid.removeViewAt(index)
 	}
 }

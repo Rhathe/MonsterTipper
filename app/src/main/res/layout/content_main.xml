@@ -44,16 +44,18 @@
 				android:id="@+id/less_tippers"
 				android:layout_width="70dp"
 				android:layout_height="90dp"
+				android:onClick="@{() -> meal.removeTippers()}"
 				android:text="-"/>
 			<EditText
 				android:layout_width="70dp"
 				android:layout_height="90dp"
 				android:inputType="number"
-				android:text="5"/>
+				android:text="@{`` + meal.tippers.size}"/>
 			<Button
 				android:id="@+id/more_tippers"
 				android:layout_width="70dp"
 				android:layout_height="90dp"
+				android:onClick="@{() -> meal.addTippers()}"
 				android:text="+"/>
 
 		</LinearLayout>
