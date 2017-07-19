@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
-		<variable name="bill" type="com.rhathe.monstertipper.models.Bill"/>
+		<variable name="meal" type="com.rhathe.monstertipper.models.Meal"/>
 	</data>
 
 	<android.support.design.widget.CoordinatorLayout
@@ -14,7 +14,7 @@
 		tools:context="com.rhathe.monstertipper.ui.Main">
 
 		<include
-			app:bill="@={bill}"
+			app:meal="@{meal}"
 			layout="@layout/content_main"/>
 
 		<android.support.design.widget.FloatingActionButton

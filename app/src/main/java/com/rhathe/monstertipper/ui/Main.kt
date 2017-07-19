@@ -10,22 +10,20 @@ import android.view.MenuItem
 import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.R
 import com.rhathe.monstertipper.models.Bill
+import com.rhathe.monstertipper.models.Meal
 
 import kotlinx.android.synthetic.main.main.*
 
 class Main : AppCompatActivity() {
-	var bill: Bill = Bill()
+	var meal = Meal()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
 		val binding: ViewDataBinding = DataBindingUtil.setContentView(this, R.layout.main)
-		binding.setVariable(BR.bill, bill)
+		binding.setVariable(BR.meal, meal)
 
-		fab.setOnClickListener { view ->
-			Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-					.setAction("Action", null).show()
-		}
+		setTipperButtons()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -44,7 +42,7 @@ class Main : AppCompatActivity() {
 		}
 	}
 
-	fun newBill() {
-		bill = Bill()
+	fun setTipperButtons() {
+
 	}
 }

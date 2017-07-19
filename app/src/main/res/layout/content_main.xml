@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:app="http://schemas.android.com/apk/res-auto">
 	<data>
-		<variable name="bill" type="com.rhathe.monstertipper.models.Bill"/>
+		<variable name="meal" type="com.rhathe.monstertipper.models.Meal"/>
 	</data>
 
 	<LinearLayout
@@ -11,28 +11,52 @@
 		android:orientation="vertical">
 
 		<include
-			app:bill="@={bill}"
-			app:field="@={bill.total}"
+			app:bill="@{meal.bill}"
+			app:field="@={meal.bill.total}"
 			app:fieldName="@{`total`}"
 			layout="@layout/bill_field"/>
 
 		<include
-			app:bill="@={bill}"
-			app:field="@={bill.tip}"
+			app:bill="@{meal.bill}"
+			app:field="@={meal.bill.tip}"
 			app:fieldName="@{`tip`}"
 			layout="@layout/bill_field"/>
 
 		<include
-			app:bill="@={bill}"
-			app:field="@={bill.tax}"
+			app:bill="@{meal.bill}"
+			app:field="@={meal.bill.tax}"
 			app:fieldName="@{`tax`}"
 			layout="@layout/bill_field"/>
 
 		<include
-			app:bill="@={bill}"
-			app:field="@={bill.base}"
+			app:bill="@{meal.bill}"
+			app:field="@={meal.bill.base}"
 			app:fieldName="@{`base`}"
 			layout="@layout/bill_field"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="80dp"
+			android:orientation="horizontal"
+			android:gravity="end">
+
+			<Button
+				android:id="@+id/less_tippers"
+				android:layout_width="70dp"
+				android:layout_height="90dp"
+				android:text="-"/>
+			<EditText
+				android:layout_width="70dp"
+				android:layout_height="90dp"
+				android:inputType="number"
+				android:text="5"/>
+			<Button
+				android:id="@+id/more_tippers"
+				android:layout_width="70dp"
+				android:layout_height="90dp"
+				android:text="+"/>
+
+		</LinearLayout>
 
 		<GridLayout
 			android:id="@+id/tipper_grid"
