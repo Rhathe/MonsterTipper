@@ -71,12 +71,12 @@ class Bill: Observable {
 	}
 
 	fun calculateTotal(base: BigDecimal = this.base, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {
-		total = base * (BigDecimal.ONE + ((tax + tip) / BigDecimal(100)))
+		total = base * taxAndTipFactor(tax, tip)
 		Log.e("total", total.toString())
 	}
 
 	fun calculateBase(total: BigDecimal = this.total, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {
-		base = total / (BigDecimal.ONE + ((tax + tip) / BigDecimal(100)))
+		base = total / taxAndTipFactor(tax, tip)
 	}
 
 	fun calculateFromBase(base: BigDecimal) {
@@ -93,5 +93,12 @@ class Bill: Observable {
 
 	fun calculateFromTip(tip: BigDecimal) {
 		calculateTotal(tip = tip)
+	}
+
+	fun taxAndTipFactor(tax: BigDecimal = this.tax, tip: BigDecimal = this.tip): BigDecimal {
+		val one = BigDecimal.ONE
+		val hun = BigDecimal(100)
+		if (tipOnTax) return (one + tip/hun) * (one + tax/hun)
+		return one + (tip + tax)/hun
 	}
 }
