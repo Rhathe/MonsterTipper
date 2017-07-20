@@ -1,6 +1,7 @@
 package com.rhathe.monstertipper.ui
 
 import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
@@ -22,7 +23,7 @@ import java.util.*
 
 
 class Main : AppCompatActivity() {
-	var meal = Meal()
+	var meal = Meal(setAsCurrentMeal = true)
 	val tipperLayoutMap = mutableMapOf<Tipper, View>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +54,7 @@ class Main : AppCompatActivity() {
 	fun setTipperButtons() {
 		meal.onAddTippers = { x -> onAddTippers(x) }
 		meal.onRemoveTippers = { x, y -> onRemoveTippers(x, y) }
+		meal.addTippers()
 	}
 
 	fun onAddTippers(tipper: Tipper) {
@@ -63,13 +65,21 @@ class Main : AppCompatActivity() {
 		binding.setVariable(BR.tipper, tipper)
 
 		val layout = binding.root as LinearLayout
-		layout.setOnClickListener { _ -> }
+		layout.setOnClickListener { _ -> goToTipper(tipper) }
 
+		tipperLayoutMap[tipper] = layout
 		grid.addView(layout)
 	}
 
 	fun onRemoveTippers(tipper: Tipper, index: Int) {
 		val grid = findViewById<View>(R.id.tipper_grid) as GridLayout
-		grid.removeViewAt(index)
+		grid.removeView(tipperLayoutMap[tipper])
+	}
+
+	fun goToTipper(tipper: Tipper) {
+		val intent = Intent(this, TipperDetailActivity::class.java)
+		val tipperIndex = meal.tippers.indexOf(tipper)
+		intent.putExtra("tipperIndex", tipperIndex)
+		startActivity(intent)
 	}
 }

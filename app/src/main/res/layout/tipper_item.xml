@@ -7,14 +7,18 @@
 	</data>
 
 	<LinearLayout
-		android:orientation="vertical"
+		android:orientation="horizontal"
 		android:padding="5dp"
-		android:layout_width="80dp"
+		android:layout_width="140dp"
 		android:layout_height="80dp">
 
 		<ImageView
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
+			android:layout_width="70dp"
+			android:layout_height="70dp"
 			android:src="@drawable/face" />
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:text="@{tipper.name}"/>
 	</LinearLayout>
 </layout>
