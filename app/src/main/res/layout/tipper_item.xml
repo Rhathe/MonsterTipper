@@ -16,9 +16,19 @@
 			android:layout_width="70dp"
 			android:layout_height="70dp"
 			android:src="@drawable/face" />
-		<TextView
+		<LinearLayout
+			android:orientation="vertical"
+			android:padding="5dp"
 			android:layout_width="wrap_content"
-			android:layout_height="fill_parent"
-			android:text="@{tipper.name}"/>
+			android:layout_height="match_parent">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@{tipper.name}"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@{`$` + tipper.bill.total}"/>
+		</LinearLayout>
 	</LinearLayout>
 </layout>

@@ -7,12 +7,18 @@ import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 
 
-class Bill: Observable {
+class Bill(
+			onTotalChange: ((HashMap<String, BigDecimal>) -> Unit)? = null
+		): Observable {
+
+	var onTotalChange = onTotalChange
+
 	@get:Bindable
 	var total: BigDecimal = BigDecimal.ZERO.setScale(2)
 		set(total) {
 			field = total.setScale(2, BigDecimal.ROUND_UP)
 			registry.notifyChange(this, BR.total)
+			onTotalChange?.invoke(getChangedValues())
 		}
 
 	@get:Bindable
@@ -58,11 +64,23 @@ class Bill: Observable {
 	}
 
 	fun adjustEverythingElse(field: String, n: BigDecimal) {
-		listOf("total", "base", "tax", "tip").forEach({x -> if (x != currentField) fieldMap.remove(x)})
+		val fields = listOf("total", "base", "tax", "tip")
+		fields.forEach({x -> if (x != currentField) fieldMap.remove(x)})
+
 		if (currentField == "base") calculateFromBase(n)
 		else if (currentField == "total") calculateFromTotal(n)
 		else if (currentField == "tip") calculateFromTip(n)
 		else if (currentField == "tax") calculateFromTax(n)
+
+	}
+
+	fun getChangedValues(): HashMap<String, BigDecimal> {
+		val map = hashMapOf<String, BigDecimal>()
+		map["total"] = total
+		map["base"] = base
+		map["tip"] = tip
+		map["tax"] = tax
+		return map
 	}
 
 	fun setCurrentFieldOnChange(s: String, change: Boolean) {
@@ -72,7 +90,6 @@ class Bill: Observable {
 
 	fun calculateTotal(base: BigDecimal = this.base, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {
 		total = base * taxAndTipFactor(tax, tip)
-		Log.e("total", total.toString())
 	}
 
 	fun calculateBase(total: BigDecimal = this.total, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {

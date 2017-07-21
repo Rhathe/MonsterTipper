@@ -8,9 +8,9 @@ import android.databinding.PropertyChangeRegistry
 import android.util.Log
 import android.view.View
 import com.rhathe.monstertipper.BR
+import java.math.BigDecimal
 
 class Meal(setAsCurrentMeal: Boolean = false): Observable {
-	val bill = Bill()
 	var onAddTippers: ((Tipper) -> Unit) = {}
 	var onRemoveTippers: ((Tipper, Int) -> Unit) = { _, _ -> }
 
@@ -19,6 +19,20 @@ class Meal(setAsCurrentMeal: Boolean = false): Observable {
 
 	val TIPPER_MIN = 1
 	val TIPPER_MAX = 20
+
+	val onTotalChange: (HashMap<String, BigDecimal>) -> Unit = {
+		map: HashMap<String, BigDecimal> ->
+
+		tippers.forEach { it.bill.total = it.bill.toBigDecimal("total", "0") }
+		val tippersGrouped = tippers.groupBy({ it.isSpecial() })
+
+		val remaining = bill.total / BigDecimal(tippers.size)
+		tippersGrouped[false]?.forEach({ tipper ->
+			tipper.bill.total = tipper.bill.toBigDecimal("total", remaining.toString())
+		})
+	}
+
+	val bill = Bill(onTotalChange = onTotalChange)
 
 	init {
 		currentMeal = if (setAsCurrentMeal) this else null
