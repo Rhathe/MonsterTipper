@@ -13,13 +13,30 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 		<LinearLayout
+			android:orientation="vertical"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			tools:context="com.rhathe.monstertipper.ui.TipperDetailActivity">
-			<include
-				app:tipper="@{tipper}"
-				layout="@layout/tipper_item"/>
 
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+				<include
+					app:tipper="@{tipper}"
+					layout="@layout/tipper_item"/>
+			</LinearLayout>
+
+			<CheckBox
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Will Pay Only for Listed Items"
+				android:checked="@={tipper.onlyHad}"/>
+
+			<include
+				app:object="@{tipper}"
+				app:field="@={tipper.willPay}"
+				app:fieldName="@{`Will Only Pay`}"
+				layout="@layout/money_base_field"/>
 
 		</LinearLayout>
 	</ScrollView>

@@ -11,28 +11,28 @@
 		android:orientation="vertical">
 
 		<include
-			app:bill="@{meal.bill}"
+			app:object="@{meal.bill}"
 			app:field="@={meal.bill.total}"
 			app:fieldName="@{`total`}"
-			layout="@layout/bill_field"/>
+			layout="@layout/money_base_field"/>
 
 		<include
-			app:bill="@{meal.bill}"
+			app:object="@{meal.bill}"
 			app:field="@={meal.bill.tip}"
 			app:fieldName="@{`tip`}"
-			layout="@layout/bill_field"/>
+			layout="@layout/money_base_field"/>
 
 		<include
-			app:bill="@{meal.bill}"
+			app:object="@{meal.bill}"
 			app:field="@={meal.bill.tax}"
 			app:fieldName="@{`tax`}"
-			layout="@layout/bill_field"/>
+			layout="@layout/money_base_field"/>
 
 		<include
-			app:bill="@{meal.bill}"
+			app:object="@{meal.bill}"
 			app:field="@={meal.bill.base}"
 			app:fieldName="@{`base`}"
-			layout="@layout/bill_field"/>
+			layout="@layout/money_base_field"/>
 
 		<LinearLayout
 			android:layout_width="match_parent"

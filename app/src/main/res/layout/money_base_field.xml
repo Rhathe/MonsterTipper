@@ -2,9 +2,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:app="http://schemas.android.com/apk/res-auto">
 	<data>
-		<variable name="bill" type="com.rhathe.monstertipper.models.Bill"/>
+		<variable name="object" type="com.rhathe.monstertipper.models.MoneyBase"/>
 		<variable name="field" type="java.math.BigDecimal"/>
 		<variable name="fieldName" type="String"/>
+		<variable name="isNullable" type="Boolean"/>
 	</data>
 
 	<LinearLayout
@@ -22,12 +23,12 @@
 			android:layout_height="0dp"
 			android:layout_weight="1" />
 		<EditText
-			android:id="@+id/total"
+			android:id="@+id/field_text_value"
 			android:layout_width="200dp"
 			android:layout_height="@dimen/field_height"
 			android:layout_gravity="end"
 			android:inputType="numberDecimal"
-			android:onFocusChangeListener="@{(_, change) -> bill.setCurrentFieldOnChange(fieldName, change)}"
-			android:text="@={bill.toDollars(fieldName, field)}"/>
+			android:onFocusChangeListener="@{(_, change) -> object.setCurrentFieldOnChange(fieldName, change)}"
+			android:text="@={object.toDollars(fieldName, isNullable, field)}"/>
 	</LinearLayout>
 </layout>

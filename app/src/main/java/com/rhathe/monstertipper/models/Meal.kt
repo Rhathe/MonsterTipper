@@ -1,16 +1,10 @@
 package com.rhathe.monstertipper.models
 
-import android.arch.persistence.room.Ignore
 import android.databinding.Bindable
-import android.databinding.InverseMethod
-import android.databinding.Observable
-import android.databinding.PropertyChangeRegistry
-import android.util.Log
-import android.view.View
 import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 
-class Meal(setAsCurrentMeal: Boolean = false): Observable {
+class Meal(setAsCurrentMeal: Boolean = false): MoneyBase() {
 	var onAddTippers: ((Tipper) -> Unit) = {}
 	var onRemoveTippers: ((Tipper, Int) -> Unit) = { _, _ -> }
 
@@ -21,14 +15,12 @@ class Meal(setAsCurrentMeal: Boolean = false): Observable {
 	val TIPPER_MAX = 20
 
 	val onTotalChange: (HashMap<String, BigDecimal>) -> Unit = {
-		map: HashMap<String, BigDecimal> ->
-
-		tippers.forEach { it.bill.total = it.bill.toBigDecimal("total", "0") }
+		tippers.forEach { it.bill.total = it.bill.toBigDecimal("total", value="0") ?: BigDecimal.ZERO }
 		val tippersGrouped = tippers.groupBy({ it.isSpecial() })
 
 		val remaining = bill.total / BigDecimal(tippers.size)
 		tippersGrouped[false]?.forEach({ tipper ->
-			tipper.bill.total = tipper.bill.toBigDecimal("total", remaining.toString())
+			tipper.bill.total = tipper.bill.toBigDecimal("total", value=remaining.toString()) ?: BigDecimal.ZERO
 		})
 	}
 
@@ -54,17 +46,6 @@ class Meal(setAsCurrentMeal: Boolean = false): Observable {
 			registry.notifyChange(this, BR.tippers)
 			onRemoveTippers(tipper, index)
 		} catch(_: Exception) {}
-	}
-
-	@Ignore
-	private val registry = PropertyChangeRegistry()
-
-	override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback) {
-		registry.add(callback)
-	}
-
-	override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback) {
-		registry.remove(callback)
 	}
 
 	companion object {
