@@ -8,31 +8,66 @@ import java.math.BigDecimal
 
 
 class Bill(
-			onTotalChange: ((HashMap<String, BigDecimal>) -> Unit)? = null
+			onTotalChange: (() -> Unit)? = null
 		): MoneyBase() {
 
 	var onTotalChange = onTotalChange
+	var storedValues = Values()
+	var newValues = storedValues.copy()
 
-	@get:Bindable
-	var total: BigDecimal = BigDecimal.ZERO.setScale(2)
-		set(total) {
-			field = total.setScale(2, BigDecimal.ROUND_UP)
-			registry.notifyChange(this, BR.total)
-			onTotalChange?.invoke(getChangedValues())
+	fun validateNewValues() {
+		storedValues = newValues.copy()
+	}
+
+	@Bindable
+	fun getTotal(): BigDecimal { return newValues.total }
+
+	fun setTotal(total: BigDecimal) {
+		newValues.total = total.setScale(2, BigDecimal.ROUND_UP)
+
+		try {
+			onTotalChange?.invoke()
+			validateNewValues()
+		} catch(e: Exception) {
+			newValues = storedValues.copy()
 		}
+		registry.notifyChange(this, BR.total)
+	}
 
-	@get:Bindable
-	var base: BigDecimal = BigDecimal.ZERO.setScale(2)
-		set(base) {
-			field = base.setScale(2, BigDecimal.ROUND_UP)
-			registry.notifyChange(this, BR.base)
-		}
+	@Bindable
+	fun getBase(): BigDecimal { return newValues.base }
 
-	var tip: BigDecimal = BigDecimal(15).setScale(0)
-	var tax: BigDecimal = BigDecimal(8.875).setScale(3)
+	fun setBase(base: BigDecimal) {
+		newValues.base = base.setScale(2, BigDecimal.ROUND_UP)
+		validateNewValues()
+		registry.notifyChange(this, BR.base)
+	}
+
+	@Bindable
+	fun getTax(): BigDecimal { return newValues.tax }
+
+	fun setTax(tax: BigDecimal) {
+		newValues.tax = tax
+		validateNewValues()
+		registry.notifyChange(this, BR.tax)
+	}
+
+	@Bindable
+	fun getTip(): BigDecimal { return newValues.tip }
+
+	fun setTip(tip: BigDecimal) {
+		newValues.tip = tip
+		validateNewValues()
+		registry.notifyChange(this, BR.tip)
+	}
+
 	var tipOnTax: Boolean = false
 
-	override fun onToBigDecimal(field: String, _n: BigDecimal?) {
+	override fun onToBigDecimal(field: String, value: BigDecimal?) {
+		calculateOtherFields(field, value)
+	}
+
+	fun calculateOtherFields(field: String, _n: BigDecimal?) {
 		val fields = listOf("total", "base", "tax", "tip")
 		fields.forEach({x -> if (x != currentField) fieldMap.remove(x)})
 
@@ -41,24 +76,14 @@ class Bill(
 		else if (currentField == "total") calculateFromTotal(n)
 		else if (currentField == "tip") calculateFromTip(n)
 		else if (currentField == "tax") calculateFromTax(n)
-
 	}
 
-	fun getChangedValues(): HashMap<String, BigDecimal> {
-		val map = hashMapOf<String, BigDecimal>()
-		map["total"] = total
-		map["base"] = base
-		map["tip"] = tip
-		map["tax"] = tax
-		return map
+	fun calculateTotal(base: BigDecimal = getBase(), tax: BigDecimal = getTax(), tip: BigDecimal = getTip()) {
+		setTotal(base * taxAndTipFactor(tax, tip))
 	}
 
-	fun calculateTotal(base: BigDecimal = this.base, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {
-		total = base * taxAndTipFactor(tax, tip)
-	}
-
-	fun calculateBase(total: BigDecimal = this.total, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {
-		base = total / taxAndTipFactor(tax, tip)
+	fun calculateBase(total: BigDecimal = getTotal(), tax: BigDecimal = getTax(), tip: BigDecimal = getTip()) {
+		setBase(total / taxAndTipFactor(tax, tip))
 	}
 
 	fun calculateFromBase(base: BigDecimal) {
@@ -77,10 +102,21 @@ class Bill(
 		calculateTotal(tip = tip)
 	}
 
-	fun taxAndTipFactor(tax: BigDecimal = this.tax, tip: BigDecimal = this.tip): BigDecimal {
+	fun taxAndTipFactor(tax: BigDecimal = getTax(), tip: BigDecimal = getTip()): BigDecimal {
 		val one = BigDecimal.ONE
 		val hun = BigDecimal(100)
 		if (tipOnTax) return (one + tip/hun) * (one + tax/hun)
 		return one + (tip + tax)/hun
 	}
+
+	fun resetNewValues() {
+		newValues = storedValues.copy()
+	}
+
+	data class Values(
+		var base: BigDecimal = BigDecimal.ZERO.setScale(2),
+		var total: BigDecimal = BigDecimal.ZERO.setScale(2),
+		var tax: BigDecimal = BigDecimal(8.875).setScale(3),
+		var tip: BigDecimal = BigDecimal(15).setScale(0)
+	)
 }
