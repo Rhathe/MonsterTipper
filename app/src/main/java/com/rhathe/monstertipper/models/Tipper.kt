@@ -1,16 +1,13 @@
 package com.rhathe.monstertipper.models
 
-import android.arch.persistence.room.Ignore
 import android.databinding.Bindable
-import java.util.*
-import android.databinding.Observable
-import android.databinding.PropertyChangeRegistry
 import com.rhathe.monstertipper.BR
+import com.rhathe.monstertipper.services.NameService
 import java.math.BigDecimal
 
 
 class Tipper(name: String = ""): MoneyBase() {
-	var name: String = if (name.isNotBlank()) name else UUID.randomUUID().toString().substring(0, 5)
+	var name: String = if (name.isNotBlank()) name else NameService.instance?.getName() ?: ""
 	var bill: Bill = Bill()
 	var onlyHad: Boolean = false
 
