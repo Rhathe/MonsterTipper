@@ -31,6 +31,20 @@ open class MoneyBase: Observable {
 		return ret
 	}
 
+	fun nullableChecked(field: String, isNullable: Boolean? = false, placeholderN: BigDecimal?, n: BigDecimal?): Boolean {
+		return n != null
+	}
+
+	@InverseMethod("nullableChecked")
+	fun enableNullable(field: String, isNullable: Boolean? = false, n: BigDecimal?, value: Boolean): BigDecimal? {
+		if (isNullable == true) {
+			val ret = if (value) BigDecimal.ZERO else null
+			fieldMap[field] = ret?.toString() ?: ""
+			return ret
+		}
+		return n
+	}
+
 	fun setCurrentFieldOnChange(s: String, change: Boolean) {
 		if (change) currentField = s
 		else if (currentField == s) currentField = ""

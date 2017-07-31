@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
 		xmlns:app="http://schemas.android.com/apk/res-auto">
 	<data>
+		<import type="android.view.View"/>
 		<variable name="object" type="com.rhathe.monstertipper.models.MoneyBase"/>
 		<variable name="field" type="java.math.BigDecimal"/>
 		<variable name="fieldName" type="String"/>
@@ -12,6 +13,13 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal">
+		<CheckBox
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:enabled="@{isNullable == true}"
+			android:visibility="@{isNullable == true ? View.VISIBLE : View.GONE}"
+			android:checked="@={object.nullableChecked(fieldName, isNullable, field, field)}"
+			/>
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/field_height"
@@ -28,6 +36,7 @@
 			android:layout_height="@dimen/field_height"
 			android:layout_gravity="end"
 			android:inputType="numberDecimal"
+			android:enabled="@{isNullable != true || field != null}"
 			android:onFocusChangeListener="@{(_, change) -> object.setCurrentFieldOnChange(fieldName, change)}"
 			android:text="@={object.toDollars(fieldName, isNullable, field)}"/>
 	</LinearLayout>

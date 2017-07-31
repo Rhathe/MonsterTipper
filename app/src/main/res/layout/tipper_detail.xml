@@ -34,6 +34,7 @@
 
 			<include
 				app:object="@{tipper}"
+				app:isNullable="@{true}"
 				app:field="@={tipper.willPay}"
 				app:fieldName="@{`Will Only Pay`}"
 				layout="@layout/money_base_field"/>
