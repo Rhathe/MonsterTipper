@@ -26,18 +26,25 @@
 					layout="@layout/tipper_item"/>
 			</LinearLayout>
 
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+				<include
+					app:object="@{tipper}"
+					app:isNullable="@{true}"
+					app:field="@={tipper.willPay}"
+					app:fieldName="@{`willPay`}"
+					layout="@layout/money_base_field"/>
+			</LinearLayout>
+
 			<CheckBox
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="Will Pay Only for Listed Items"
+				android:alpha="@{tipper.isOnlyHadEnabled(tipper.willPay) ? 1.0f : 0.2f}"
+				android:enabled="@{tipper.isOnlyHadEnabled(tipper.willPay)}"
 				android:checked="@={tipper.onlyHad}"/>
 
-			<include
-				app:object="@{tipper}"
-				app:isNullable="@{true}"
-				app:field="@={tipper.willPay}"
-				app:fieldName="@{`Will Only Pay`}"
-				layout="@layout/money_base_field"/>
 
 		</LinearLayout>
 	</ScrollView>

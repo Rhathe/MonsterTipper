@@ -1,6 +1,7 @@
 package com.rhathe.monstertipper.models
 
 import android.databinding.Bindable
+import android.util.Log
 import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.services.NameService
 import java.math.BigDecimal
@@ -31,5 +32,24 @@ class Tipper(name: String = ""): MoneyBase() {
 			|| onlyHad
 			|| hadItems.isNotEmpty()
 			|| avoidedItems.isNotEmpty()
+	}
+
+	override fun isFieldEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {
+		Log.e("safaf", field)
+		when(field) {
+			"willPay" -> {
+				if (onlyHad) return false
+			}
+		}
+		return super.isFieldEnabled(field, isNullable, value)
+	}
+
+	override fun getLabel(field: String): String {
+		if (field == "willPay") return "Will Only Pay"
+		return super.getLabel(field)
+	}
+
+	fun isOnlyHadEnabled(willPay: BigDecimal?): Boolean {
+		return willPay == null
 	}
 }

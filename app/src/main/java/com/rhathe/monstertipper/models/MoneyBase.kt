@@ -52,6 +52,22 @@ open class MoneyBase: Observable {
 
 	open fun onToBigDecimal(field: String, value: BigDecimal?) {}
 
+	open fun isFieldEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {
+		return true
+	}
+
+	open fun isCheckboxEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {
+		return isFieldEnabled(field, isNullable, value) && isNullable == true
+	}
+
+	open fun isEditTextEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {
+		return isFieldEnabled(field, isNullable, value) && (isNullable != true || value != null)
+	}
+
+	open fun getLabel(field: String): String {
+		return field
+	}
+
 	@Ignore
 	protected val registry = PropertyChangeRegistry()
 

@@ -12,20 +12,20 @@
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:alpha="@{object.isFieldEnabled(fieldName, isNullable, field) ? 1.0f : 0.2f}"
 		android:orientation="horizontal">
 		<CheckBox
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:enabled="@{isNullable == true}"
+			android:enabled="@{object.isCheckboxEnabled(fieldName, isNullable, field)}"
 			android:visibility="@{isNullable == true ? View.VISIBLE : View.GONE}"
-			android:checked="@={object.nullableChecked(fieldName, isNullable, field, field)}"
-			/>
+			android:checked="@={object.nullableChecked(fieldName, isNullable, field, field)}"/>
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="@dimen/field_height"
 			android:textAlignment="center"
 			android:padding="5dp"
-			android:text="@{fieldName + `: ` + field.toString()}"/>
+			android:text="@{object.getLabel(fieldName) + `: ` + field.toString()}"/>
 		<Space
 			android:layout_width="0dp"
 			android:layout_height="0dp"
@@ -36,7 +36,7 @@
 			android:layout_height="@dimen/field_height"
 			android:layout_gravity="end"
 			android:inputType="numberDecimal"
-			android:enabled="@{isNullable != true || field != null}"
+			android:enabled="@{object.isEditTextEnabled(fieldName, isNullable, field)}"
 			android:onFocusChangeListener="@{(_, change) -> object.setCurrentFieldOnChange(fieldName, change)}"
 			android:text="@={object.toDollars(fieldName, isNullable, field)}"/>
 	</LinearLayout>
