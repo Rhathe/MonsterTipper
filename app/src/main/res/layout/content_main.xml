@@ -13,14 +13,8 @@
 
 		<include
 			app:object="@{meal.bill}"
-			app:field="@={meal.bill.total}"
-			app:fieldName="@{`total`}"
-			layout="@layout/money_base_field"/>
-
-		<include
-			app:object="@{meal.bill}"
-			app:field="@={meal.bill.tip}"
-			app:fieldName="@{`tip`}"
+			app:field="@={meal.bill.base}"
+			app:fieldName="@{`base`}"
 			layout="@layout/money_base_field"/>
 
 		<include
@@ -31,8 +25,14 @@
 
 		<include
 			app:object="@{meal.bill}"
-			app:field="@={meal.bill.base}"
-			app:fieldName="@{`base`}"
+			app:field="@={meal.bill.tip}"
+			app:fieldName="@{`tip`}"
+			layout="@layout/money_base_field"/>
+
+		<include
+			app:object="@{meal.bill}"
+			app:field="@={meal.bill.total}"
+			app:fieldName="@{`total`}"
 			layout="@layout/money_base_field"/>
 
 		<LinearLayout
