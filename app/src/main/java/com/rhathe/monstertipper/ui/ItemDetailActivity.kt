@@ -9,20 +9,19 @@ import com.rhathe.monstertipper.R
 import com.rhathe.monstertipper.models.Meal
 import com.rhathe.monstertipper.models.Tipper
 import com.rhathe.monstertipper.models.Item
+import com.rhathe.monstertipper.services.CurrentService
 
 class ItemDetailActivity : AppCompatActivity() {
 	var tipper: Tipper? = null
-	var tipperIndex: Int = 0
 	var item: Item? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-		val binding: ViewDataBinding = DataBindingUtil.setContentView(this, R.layout.tipper_detail)
-		tipperIndex = Integer.parseInt(intent.extras.get("tipperIndex").toString())
-		tipper = Meal.currentMeal?.tippers?.get(tipperIndex) ?: Tipper()
-		val isConsumed: Boolean = intent.extras.get("isConsumed") == true
+		val binding: ViewDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_item_detail)
+		tipper = CurrentService.getCurrent(Tipper::class.java) as Tipper? ?: Tipper()
+		item = CurrentService.getCurrent(Item::class.java) as Item? ?: Item()
 		binding.setVariable(BR.item, item)
 	}
 }

@@ -1,6 +1,5 @@
 package com.rhathe.monstertipper.ui
 
-import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
@@ -10,16 +9,20 @@ import android.view.MenuItem
 import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.R
 import com.rhathe.monstertipper.models.Meal
-import com.rhathe.monstertipper.models.Tipper
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.rhathe.monstertipper.adapters.TipperItemListAdapter
+import com.rhathe.monstertipper.services.CurrentService
 import kotlinx.android.synthetic.main.content_main.*
 
 
 class Main : AppCompatActivity() {
-	var meal = Meal(setAsCurrentMeal = true)
+	var meal = Meal()
+
+	init {
+		CurrentService.setAsCurrent(meal)
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

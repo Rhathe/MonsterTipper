@@ -22,8 +22,8 @@ class Tipper(name: String = ""): MoneyBase() {
 	var maxPay: BigDecimal? = null
 	var minPay: BigDecimal? = null
 
-	var consumedItems: List<Item> = emptyList()
-	var avoidedItems: List<Item> = emptyList()
+	var consumedItems: MutableList<Item> = mutableListOf()
+	var avoidedItems: MutableList<Item> = mutableListOf()
 
 	fun isSpecial(): Boolean {
 		return maxPay != null
@@ -52,7 +52,15 @@ class Tipper(name: String = ""): MoneyBase() {
 		return willPay == null
 	}
 
-	fun addConsumedItem() {
+	fun addConsumedItem(): Item {
+		val item = Item()
+		consumedItems.add(item)
+		return item
+	}
 
+	fun addAvoidedItem(): Item {
+		val item = Item()
+		avoidedItems.add(item)
+		return item
 	}
 }
