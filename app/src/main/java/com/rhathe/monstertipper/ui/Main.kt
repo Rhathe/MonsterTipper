@@ -13,6 +13,7 @@ import com.rhathe.monstertipper.models.Meal
 import com.rhathe.monstertipper.models.Tipper
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
+import android.view.View
 import com.rhathe.monstertipper.adapters.TipperItemListAdapter
 import kotlinx.android.synthetic.main.content_main.*
 
@@ -26,7 +27,7 @@ class Main : AppCompatActivity() {
 		val binding: ViewDataBinding = DataBindingUtil.setContentView(this, R.layout.main)
 		binding.setVariable(BR.meal, meal)
 
-		setTipperButtons()
+		addTippers()
 		setupTipperItemRecyclerView()
 	}
 
@@ -46,25 +47,14 @@ class Main : AppCompatActivity() {
 		}
 	}
 
-	fun setTipperButtons() {
-		meal.onAddTippers = { tipper -> onAddTippers(tipper) }
-		meal.onRemoveTippers = { tipper, index -> onRemoveTippers(tipper, index) }
+	fun addTippers(v: View? = null) {
 		meal.addTippers()
-	}
-
-	fun onAddTippers(tipper: Tipper) {
 		tipper_items.adapter?.notifyDataSetChanged()
 	}
 
-	fun onRemoveTippers(tipper: Tipper, index: Int) {
+	fun removeTippers(v: View? = null) {
+		meal.removeTippers()
 		tipper_items.adapter?.notifyDataSetChanged()
-	}
-
-	fun goToTipper(tipper: Tipper) {
-		val intent = Intent(this, TipperDetailActivity::class.java)
-		val tipperIndex = meal.tippers.indexOf(tipper)
-		intent.putExtra("tipperIndex", tipperIndex)
-		startActivity(intent)
 	}
 
 	fun setupTipperItemRecyclerView() {

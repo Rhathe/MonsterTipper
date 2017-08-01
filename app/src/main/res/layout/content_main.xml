@@ -45,7 +45,7 @@
 				android:id="@+id/less_tippers"
 				android:layout_width="70dp"
 				android:layout_height="@dimen/field_height"
-				android:onClick="@{() -> meal.removeTippers()}"
+				android:onClick="removeTippers"
 				android:text="-"/>
 			<EditText
 				android:layout_width="70dp"
@@ -56,7 +56,7 @@
 				android:id="@+id/more_tippers"
 				android:layout_width="70dp"
 				android:layout_height="@dimen/field_height"
-				android:onClick="@{() -> meal.addTippers()}"
+				android:onClick="addTippers"
 				android:text="+"/>
 
 		</LinearLayout>
