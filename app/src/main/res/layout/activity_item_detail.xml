@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data>
+		<variable name="item" type="com.rhathe.monstertipper.models.Item"/>
+	</data>
+
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			tools:context="com.rhathe.monstertipper.ui.ItemDetailActivity">
+
+			<EditText
+				android:id="@+id/item_name"
+				android:layout_width="200dp"
+				android:layout_height="@dimen/field_height"
+				android:hint="Food Item Name"
+				android:text="@={item.name}"/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+				<include
+					app:object="@{item.bill}"
+					app:field="@={item.bill.base}"
+					app:fieldName="@{`base`}"
+					layout="@layout/money_base_field"/>
+			</LinearLayout>
+
+
+		</LinearLayout>
+	</ScrollView>
+
+</layout>

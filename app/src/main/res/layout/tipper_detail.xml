@@ -40,10 +40,41 @@
 			<CheckBox
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Will Pay Only for Listed Items"
-				android:alpha="@{tipper.isOnlyHadEnabled(tipper.willPay) ? 1.0f : 0.2f}"
-				android:enabled="@{tipper.isOnlyHadEnabled(tipper.willPay)}"
-				android:checked="@={tipper.onlyHad}"/>
+				android:text="Will Pay Only for Consumed Items"
+				android:alpha="@{tipper.isOnlyConsumedEnabled(tipper.willPay) ? 1.0f : 0.2f}"
+				android:enabled="@{tipper.isOnlyConsumedEnabled(tipper.willPay)}"
+				android:checked="@={tipper.onlyConsumed}"/>
+
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:weightSum="2">
+				<LinearLayout
+					android:id="@+id/consumedItemsList"
+					android:orientation="vertical"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1">
+					<Button
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:onClick="goToAddConsumedItem"
+						android:text="Add Consumed Items"/>
+				</LinearLayout>
+				<LinearLayout
+					android:id="@+id/avoidedItemsList"
+					android:orientation="vertical"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1">
+					<Button
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:onClick="goToAvoidedItem"
+						android:text="Add Avoided Items"/>
+				</LinearLayout>
+			</LinearLayout>
 
 
 		</LinearLayout>

@@ -10,7 +10,7 @@ import java.math.BigDecimal
 class Tipper(name: String = ""): MoneyBase() {
 	var name: String = if (name.isNotBlank()) name else NameService.instance?.getName() ?: ""
 	var bill: Bill = Bill()
-	var onlyHad: Boolean = false
+	var onlyConsumed: Boolean = false
 
 	@get:Bindable
 	var willPay: BigDecimal? = null
@@ -22,23 +22,22 @@ class Tipper(name: String = ""): MoneyBase() {
 	var maxPay: BigDecimal? = null
 	var minPay: BigDecimal? = null
 
-	var hadItems: List<Item> = emptyList()
+	var consumedItems: List<Item> = emptyList()
 	var avoidedItems: List<Item> = emptyList()
 
 	fun isSpecial(): Boolean {
 		return maxPay != null
 			|| minPay != null
 			|| willPay != null
-			|| onlyHad
-			|| hadItems.isNotEmpty()
+			|| onlyConsumed
+			|| consumedItems.isNotEmpty()
 			|| avoidedItems.isNotEmpty()
 	}
 
 	override fun isFieldEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {
-		Log.e("safaf", field)
 		when(field) {
 			"willPay" -> {
-				if (onlyHad) return false
+				if (onlyConsumed) return false
 			}
 		}
 		return super.isFieldEnabled(field, isNullable, value)
@@ -49,7 +48,11 @@ class Tipper(name: String = ""): MoneyBase() {
 		return super.getLabel(field)
 	}
 
-	fun isOnlyHadEnabled(willPay: BigDecimal?): Boolean {
+	fun isOnlyConsumedEnabled(willPay: BigDecimal?): Boolean {
 		return willPay == null
+	}
+
+	fun addConsumedItem() {
+
 	}
 }

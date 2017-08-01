@@ -20,11 +20,15 @@ import com.rhathe.monstertipper.R
 import com.rhathe.monstertipper.models.Meal
 import com.rhathe.monstertipper.models.Tipper
 import java.util.*
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.content_main.*
 
 
 class Main : AppCompatActivity() {
 	var meal = Meal(setAsCurrentMeal = true)
-	val tipperLayoutMap = mutableMapOf<Tipper, View>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -33,6 +37,7 @@ class Main : AppCompatActivity() {
 		binding.setVariable(BR.meal, meal)
 
 		setTipperButtons()
+		setupTipperItemRecyclerView()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -52,28 +57,17 @@ class Main : AppCompatActivity() {
 	}
 
 	fun setTipperButtons() {
-		meal.onAddTippers = { x -> onAddTippers(x) }
-		meal.onRemoveTippers = { x, y -> onRemoveTippers(x, y) }
+		meal.onAddTippers = { tipper -> onAddTippers(tipper) }
+		meal.onRemoveTippers = { tipper, index -> onRemoveTippers(tipper, index) }
 		meal.addTippers()
 	}
 
 	fun onAddTippers(tipper: Tipper) {
-		val inflater = LayoutInflater.from(applicationContext)
-		val grid = findViewById<View>(R.id.tipper_grid) as GridLayout
-
-		val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater, R.layout.tipper_item, grid, false)
-		binding.setVariable(BR.tipper, tipper)
-
-		val layout = binding.root as LinearLayout
-		layout.setOnClickListener { _ -> goToTipper(tipper) }
-
-		tipperLayoutMap[tipper] = layout
-		grid.addView(layout)
+		tipper_items.adapter?.notifyDataSetChanged()
 	}
 
 	fun onRemoveTippers(tipper: Tipper, index: Int) {
-		val grid = findViewById<View>(R.id.tipper_grid) as GridLayout
-		grid.removeView(tipperLayoutMap[tipper])
+		tipper_items.adapter?.notifyDataSetChanged()
 	}
 
 	fun goToTipper(tipper: Tipper) {
@@ -81,5 +75,13 @@ class Main : AppCompatActivity() {
 		val tipperIndex = meal.tippers.indexOf(tipper)
 		intent.putExtra("tipperIndex", tipperIndex)
 		startActivity(intent)
+	}
+
+	fun setupTipperItemRecyclerView() {
+		val layoutManager = GridLayoutManager(this, 2)
+		tipper_items.layoutManager = layoutManager
+		tipper_items.adapter = TipperItemListAdapter(meal.tippers)
+		tipper_items.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+		tipper_items.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL))
 	}
 }
