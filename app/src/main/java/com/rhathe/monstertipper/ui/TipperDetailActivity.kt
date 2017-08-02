@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.tipper_detail.*
 
 class TipperDetailActivity : AppCompatActivity() {
 	var tipper: Tipper? = null
-	var tipperIndex: Int = 0
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -53,7 +52,6 @@ class TipperDetailActivity : AppCompatActivity() {
 		val adapter = v.adapter as ConsumableItemListAdapter?
 		adapter?.notifyDataSetChanged()
 		adapter?.goToItem(item as Any, applicationContext)
-
 	}
 
 	fun setupRecyclerView(items: MutableList<Item>, v: RecyclerView) {
@@ -62,5 +60,9 @@ class TipperDetailActivity : AppCompatActivity() {
 		v.adapter = ConsumableItemListAdapter(items)
 		v.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 		v.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL))
+	}
+
+	fun finish(@Suppress("UNUSED_PARAMETER") v: View) {
+		finish()
 	}
 }

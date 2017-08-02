@@ -4,9 +4,9 @@ import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.R
-import com.rhathe.monstertipper.models.Meal
 import com.rhathe.monstertipper.models.Tipper
 import com.rhathe.monstertipper.models.Item
 import com.rhathe.monstertipper.services.CurrentService
@@ -23,5 +23,9 @@ class ItemDetailActivity : AppCompatActivity() {
 		tipper = CurrentService.getCurrent(Tipper::class.java) as Tipper? ?: Tipper()
 		item = CurrentService.getCurrent(Item::class.java) as Item? ?: Item()
 		binding.setVariable(BR.item, item)
+	}
+
+	fun finish(@Suppress("UNUSED_PARAMETER") v: View) {
+		finish()
 	}
 }

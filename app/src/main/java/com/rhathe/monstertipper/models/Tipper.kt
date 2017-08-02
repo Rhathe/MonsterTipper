@@ -53,14 +53,48 @@ class Tipper(name: String = ""): MoneyBase() {
 	}
 
 	fun addConsumedItem(): Item {
-		val item = Item()
+		val item = Item("Eaten " + (consumedItems.size + 1))
 		consumedItems.add(item)
 		return item
 	}
 
 	fun addAvoidedItem(): Item {
-		val item = Item()
+		val item = Item("Didn't Have " + (avoidedItems.size + 1))
 		avoidedItems.add(item)
 		return item
+	}
+
+	fun matchMealTaxAndTip(meal: Meal) {
+		bill.matchTaxAndTip(meal.bill)
+		consumedItems.forEach { it.calculateTotal(bill) }
+		avoidedItems.forEach { it.calculateTotal(bill) }
+	}
+
+	fun calculateTotalIfWillPay(): BigDecimal? {
+		if (willPay != null) {
+			return calculateTotal(willPay as BigDecimal)
+
+		}
+		return willPay
+	}
+
+	fun calculateTotal(total: BigDecimal): BigDecimal {
+		bill.calculateOtherFields("total", total)
+		bill.setTotal(total)
+		return total
+	}
+
+	fun addToTotal(total: BigDecimal): BigDecimal {
+		return calculateTotal(total + bill.getTotal())
+	}
+
+	fun calculateDifferenceFromItems(): BigDecimal {
+		val consumedTotal = calculateTotalFromItemList(consumedItems)
+		val avoidedTotal = calculateTotalFromItemList(avoidedItems)
+		return consumedTotal - avoidedTotal
+	}
+
+	fun calculateTotalFromItemList(items: MutableList<Item>): BigDecimal {
+		return items.map { it.bill.newValues.total }.fold(BigDecimal.ZERO){ x, y -> x + y }
 	}
 }

@@ -86,19 +86,19 @@ class Bill(
 		setBase(total / taxAndTipFactor(tax, tip))
 	}
 
-	fun calculateFromBase(base: BigDecimal) {
+	fun calculateFromBase(base: BigDecimal = getBase()) {
 		calculateTotal(base = base)
 	}
 
-	fun calculateFromTotal(total: BigDecimal) {
+	fun calculateFromTotal(total: BigDecimal = getTotal()) {
 		calculateBase(total = total)
 	}
 
-	fun calculateFromTax(tax: BigDecimal) {
+	fun calculateFromTax(tax: BigDecimal = getTax()) {
 		calculateTotal(tax = tax)
 	}
 
-	fun calculateFromTip(tip: BigDecimal) {
+	fun calculateFromTip(tip: BigDecimal = getTip()) {
 		calculateTotal(tip = tip)
 	}
 
@@ -109,8 +109,18 @@ class Bill(
 		return one + (tip + tax)/hun
 	}
 
-	fun resetNewValues() {
+	fun resetNewValuesToStored() {
 		newValues = storedValues.copy()
+	}
+
+	fun resetBaseTotal() {
+		newValues.total = BigDecimal.ZERO
+		newValues.base = BigDecimal.ZERO
+	}
+
+	fun matchTaxAndTip(bill: Bill) {
+		this.setTax(bill.getTax())
+		this.setTip(bill.getTip())
 	}
 
 	data class Values(

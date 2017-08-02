@@ -12,6 +12,7 @@
 	<ScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
+
 		<LinearLayout
 			android:orientation="vertical"
 			android:layout_width="match_parent"
@@ -35,7 +36,12 @@
 					layout="@layout/money_base_field"/>
 			</LinearLayout>
 
-
+			<Button
+				android:layout_width="100dp"
+				android:layout_height="50dp"
+				android:text="Finish"
+				android:layout_gravity="end"
+				android:onClick="finish"/>
 		</LinearLayout>
 	</ScrollView>
 

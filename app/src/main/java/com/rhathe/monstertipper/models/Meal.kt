@@ -8,29 +8,26 @@ import java.math.BigDecimal
 class Meal(setAsCurrentMeal: Boolean = false): MoneyBase() {
 	@get:Bindable
 	val tippers = mutableListOf<Tipper>()
-	val EMPTY_LIST = listOf<Tipper>()
-
 	val TIPPER_MIN = 1
 	val TIPPER_MAX = 20
 
 	val onTotalChange: () -> Unit = {
-		tippers.forEach { it.bill.newValues.total = BigDecimal.ZERO }
-		val tippersGrouped = tippers.groupBy({ if (it.willPay != null) "staticPay" else "dynamicPay" })
-		var remaining = bill.getTotal() - calculateWillPayers(tippersGrouped["staticPay"] ?: EMPTY_LIST)
+		// Initialize each tipper to zero
+		tippers.forEach {
+			it.bill.resetBaseTotal()
+			it.matchMealTaxAndTip(this)
+		}
 
-		calculateSplit(tippersGrouped["dynamicPay"] ?: EMPTY_LIST, remaining)
+		// Group by staticPayers and dynamicPayers
+		val tippersGrouped = tippers.groupBy({ if (it.calculateTotalIfWillPay() == null) "dynamicPay" else "staticPay" })
 
-		tippers.forEach({ tipper ->
-			val total = tipper.bill.newValues.total
-			tipper.bill.setTotal(tipper.bill.toBigDecimal("total", value=total.toString()) ?: BigDecimal.ZERO)
-		})
+		// Calculate remaining from tip and items values
+		var remaining = bill.getTotal() - calculateWillPayersTotal(tippersGrouped["staticPay"])
+		remaining -= calculateItemsDifferenceTotal(tippersGrouped["dynamicPay"])
+		calculateSplit(tippersGrouped["dynamicPay"], remaining)
 	}
 
 	val bill = Bill(onTotalChange = onTotalChange)
-
-	init {
-		currentMeal = if (setAsCurrentMeal) this else null
-	}
 
 	fun addTippers() {
 		if (tippers.size >= TIPPER_MAX) return
@@ -43,22 +40,30 @@ class Meal(setAsCurrentMeal: Boolean = false): MoneyBase() {
 		try {
 			if (tippers.size <= TIPPER_MIN) return
 			val index = tippers.size - 1
-			val tipper = tippers.removeAt(index)
+			tippers.removeAt(index)
 			registry.notifyChange(this, BR.tippers)
 		} catch(_: Exception) {}
 	}
 
-	fun calculateWillPayers(tippers: List<Tipper>): BigDecimal {
-		tippers.forEach { it.bill.newValues.total = it.willPay ?: BigDecimal.ZERO }
-		return tippers.map { it.bill.newValues.total }.fold(BigDecimal.ZERO){ x, y -> x + y }
+	fun calculateWillPayersTotal(tippers: List<Tipper>?): BigDecimal {
+		return calculateTippersValuesTotal(tippers, { it.bill.newValues.total })
 	}
 
-	fun calculateSplit(tippers: List<Tipper>, remaining: BigDecimal) {
-		val split = remaining / BigDecimal(if (tippers.size > 0) tippers.size else 1)
-		tippers.forEach { it.bill.newValues.total = split }
+	fun calculateItemsDifferenceTotal(tippers: List<Tipper>?): BigDecimal {
+		return calculateTippersValuesTotal(tippers, {
+			val diff = it.calculateDifferenceFromItems()
+			it.addToTotal(diff)
+			diff
+		})
 	}
 
-	companion object {
-		var currentMeal: Meal? = null
+	fun calculateTippersValuesTotal(tippers: List<Tipper>?, fn: (Tipper) -> BigDecimal): BigDecimal {
+		return tippers?.map(fn)?.fold(BigDecimal.ZERO){ x, y -> x + y } ?: BigDecimal.ZERO
+	}
+
+	fun calculateSplit(tippers: List<Tipper>?, remaining: BigDecimal) {
+		val size = tippers?.size ?: 0
+		val split = remaining / BigDecimal(if (size > 0) size else 1)
+		tippers?.forEach { it.addToTotal(split) }
 	}
 }

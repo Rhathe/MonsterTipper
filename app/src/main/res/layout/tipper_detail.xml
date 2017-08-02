@@ -21,11 +21,18 @@
 			tools:context="com.rhathe.monstertipper.ui.TipperDetailActivity">
 
 			<LinearLayout
+				android:orientation="horizontal"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 				<include
 					app:tipper="@{tipper}"
 					layout="@layout/tipper_item"/>
+				<Button
+					android:layout_width="100dp"
+					android:layout_height="50dp"
+					android:text="Finish"
+					android:layout_gravity="end"
+					android:onClick="finish"/>
 			</LinearLayout>
 
 			<LinearLayout
