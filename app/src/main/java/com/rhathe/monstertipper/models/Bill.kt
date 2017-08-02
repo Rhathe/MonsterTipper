@@ -123,6 +123,15 @@ class Bill(
 		this.setTip(bill.getTip())
 	}
 
+	override fun isFieldEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {
+		when(field) {
+			"total" -> {
+				if (getBase().setScale(2) == BigDecimal.ZERO.setScale(2)) return false
+			}
+		}
+		return true
+	}
+
 	data class Values(
 		var base: BigDecimal = BigDecimal.ZERO.setScale(2),
 		var total: BigDecimal = BigDecimal.ZERO.setScale(2),

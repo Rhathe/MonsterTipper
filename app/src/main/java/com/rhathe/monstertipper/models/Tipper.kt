@@ -17,6 +17,8 @@ class Tipper(name: String = ""): MoneyBase() {
 		set(willPay) {
 			field = willPay?.setScale(2, BigDecimal.ROUND_UP)
 			registry.notifyChange(this, BR.willPay)
+			registry.notifyChange(this, BR.consumedItemsEnabled)
+			registry.notifyChange(this, BR.avoidedItemsEnabled)
 		}
 
 	var maxPay: BigDecimal? = null
@@ -48,8 +50,14 @@ class Tipper(name: String = ""): MoneyBase() {
 		return super.getLabel(field)
 	}
 
-	fun isOnlyConsumedEnabled(willPay: BigDecimal?): Boolean {
+	@Bindable
+	fun getConsumedItemsEnabled(): Boolean {
 		return willPay == null
+	}
+
+	@Bindable
+	fun getAvoidedItemsEnabled(): Boolean {
+		return getConsumedItemsEnabled() && !onlyConsumed
 	}
 
 	fun addConsumedItem(): Item {
@@ -71,11 +79,13 @@ class Tipper(name: String = ""): MoneyBase() {
 	}
 
 	fun calculateTotalIfWillPay(): BigDecimal? {
-		if (willPay != null) {
-			return calculateTotal(willPay as BigDecimal)
-
-		}
+		if (willPay != null) return calculateTotal(willPay as BigDecimal)
 		return willPay
+	}
+
+	fun calculateTotalIfOnlyPayForConsumed(): BigDecimal? {
+		if (onlyConsumed) return calculateTotal(calculateTotalFromItemList(consumedItems))
+		return null
 	}
 
 	fun calculateTotal(total: BigDecimal): BigDecimal {

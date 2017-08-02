@@ -5,6 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
+		<import type="android.view.View"/>
 		<variable name="tipper" type="com.rhathe.monstertipper.models.Tipper"/>
 	</data>
 
@@ -50,14 +51,15 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="Will Pay Only for Consumed Items"
-				android:alpha="@{tipper.isOnlyConsumedEnabled(tipper.willPay) ? 1.0f : 0.2f}"
-				android:enabled="@{tipper.isOnlyConsumedEnabled(tipper.willPay)}"
+				android:alpha="@{tipper.consumedItemsEnabled ? 1.0f : 0.2f}"
+				android:enabled="@{tipper.consumedItemsEnabled}"
 				android:checked="@={tipper.onlyConsumed}"/>
 
 			<LinearLayout
 				android:orientation="horizontal"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:alpha="@{tipper.consumedItemsEnabled ? 1.0f : 0.2f}"
 				android:weightSum="2">
 
 				<LinearLayout
@@ -70,11 +72,13 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:onClick="addConsumedItem"
+						android:enabled="@{tipper.consumedItemsEnabled}"
 						android:text="Add Consumed Items"/>
 					<android.support.v7.widget.RecyclerView
 						android:id="@+id/consumed_items"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
+						android:visibility="@{tipper.consumedItemsEnabled ? View.VISIBLE : View.GONE}"
 						tools:listitem="@layout/consumable_item"/>
 				</LinearLayout>
 
@@ -83,16 +87,19 @@
 					android:orientation="vertical"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
+					android:alpha="@{tipper.avoidedItemsEnabled ? 1.0f : 0.2f}"
 					android:layout_weight="1">
 					<Button
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:onClick="addAvoidedItem"
+						android:enabled="@{tipper.avoidedItemsEnabled}"
 						android:text="Add Avoided Items"/>
 					<android.support.v7.widget.RecyclerView
 						android:id="@+id/avoided_items"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"
+						android:visibility="@{tipper.avoidedItemsEnabled ? View.VISIBLE : View.GONE}"
 						tools:listitem="@layout/consumable_item"/>
 				</LinearLayout>
 

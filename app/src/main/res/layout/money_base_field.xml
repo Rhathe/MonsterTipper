@@ -24,7 +24,7 @@
 			android:layout_height="@dimen/field_height"
 			android:textAlignment="center"
 			android:padding="5dp"
-			android:text="@{object.getLabel(fieldName) + `: ` + field.toString()}"/>
+			android:text="@{object.getLabel(fieldName)}"/>
 		<Space
 			android:layout_width="0dp"
 			android:layout_height="0dp"

@@ -19,11 +19,16 @@ class Meal(setAsCurrentMeal: Boolean = false): MoneyBase() {
 		}
 
 		// Group by staticPayers and dynamicPayers
-		val tippersGrouped = tippers.groupBy({ if (it.calculateTotalIfWillPay() == null) "dynamicPay" else "staticPay" })
+		val tippersGrouped = tippers.groupBy {
+			val nullCheck = it.calculateTotalIfWillPay() ?: it.calculateTotalIfOnlyPayForConsumed()
+			if (nullCheck == null) "dynamicPay" else "staticPay"
+		}
 
 		// Calculate remaining from tip and items values
 		var remaining = bill.getTotal() - calculateWillPayersTotal(tippersGrouped["staticPay"])
 		remaining -= calculateItemsDifferenceTotal(tippersGrouped["dynamicPay"])
+
+		// Split the remaining among the eligible tippers
 		calculateSplit(tippersGrouped["dynamicPay"], remaining)
 	}
 
@@ -64,6 +69,11 @@ class Meal(setAsCurrentMeal: Boolean = false): MoneyBase() {
 	fun calculateSplit(tippers: List<Tipper>?, remaining: BigDecimal) {
 		val size = tippers?.size ?: 0
 		val split = remaining / BigDecimal(if (size > 0) size else 1)
-		tippers?.forEach { it.addToTotal(split) }
+		var remaining = remaining
+		tippers?.forEach {
+			val totalAdd = if (remaining > split) split else remaining.max(BigDecimal.ZERO)
+			it.addToTotal(totalAdd)
+			remaining -= split
+		}
 	}
 }
