@@ -15,7 +15,7 @@
 		<ImageView
 			android:layout_width="70dp"
 			android:layout_height="70dp"
-			android:src="@drawable/face" />
+			android:src="@drawable/monster" />
 		<LinearLayout
 			android:orientation="vertical"
 			android:padding="5dp"
