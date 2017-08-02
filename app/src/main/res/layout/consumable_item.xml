@@ -3,7 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<data>
-		<variable name="consumable" type="com.rhathe.monstertipper.models.Item"/>
+		<variable name="consumable" type="com.rhathe.monstertipper.models.ConsumableItem"/>
 	</data>
 
 	<LinearLayout

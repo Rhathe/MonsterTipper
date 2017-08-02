@@ -109,10 +109,6 @@ class Bill(
 		return one + (tip + tax)/hun
 	}
 
-	fun resetNewValuesToStored() {
-		newValues = storedValues.copy()
-	}
-
 	fun resetBaseTotal() {
 		newValues.total = BigDecimal.ZERO
 		newValues.base = BigDecimal.ZERO

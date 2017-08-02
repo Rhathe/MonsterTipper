@@ -1,6 +1,6 @@
 package com.rhathe.monstertipper.models
 
-class Item(var name: String = ""): MoneyBase() {
+class ConsumableItem(var name: String = ""): MoneyBase() {
 	var bill: Bill = Bill()
 
 	fun calculateTotal(bill: Bill) {

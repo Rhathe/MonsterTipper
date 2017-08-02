@@ -1,7 +1,6 @@
 package com.rhathe.monstertipper.models
 
 import android.databinding.Bindable
-import android.util.Log
 import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.services.NameService
 import java.math.BigDecimal
@@ -24,8 +23,8 @@ class Tipper(name: String = ""): MoneyBase() {
 	var maxPay: BigDecimal? = null
 	var minPay: BigDecimal? = null
 
-	var consumedItems: MutableList<Item> = mutableListOf()
-	var avoidedItems: MutableList<Item> = mutableListOf()
+	var consumedItems: MutableList<ConsumableItem> = mutableListOf()
+	var avoidedItems: MutableList<ConsumableItem> = mutableListOf()
 
 	fun isSpecial(): Boolean {
 		return maxPay != null
@@ -60,14 +59,14 @@ class Tipper(name: String = ""): MoneyBase() {
 		return getConsumedItemsEnabled() && !onlyConsumed
 	}
 
-	fun addConsumedItem(): Item {
-		val item = Item("Eaten " + (consumedItems.size + 1))
+	fun addConsumedItem(): ConsumableItem {
+		val item = ConsumableItem("Eaten " + (consumedItems.size + 1))
 		consumedItems.add(item)
 		return item
 	}
 
-	fun addAvoidedItem(): Item {
-		val item = Item("Didn't Have " + (avoidedItems.size + 1))
+	fun addAvoidedItem(): ConsumableItem {
+		val item = ConsumableItem("Didn't Have " + (avoidedItems.size + 1))
 		avoidedItems.add(item)
 		return item
 	}
@@ -104,7 +103,7 @@ class Tipper(name: String = ""): MoneyBase() {
 		return consumedTotal - avoidedTotal
 	}
 
-	fun calculateTotalFromItemList(items: MutableList<Item>): BigDecimal {
+	fun calculateTotalFromItemList(items: MutableList<ConsumableItem>): BigDecimal {
 		return items.map { it.bill.newValues.total }.fold(BigDecimal.ZERO){ x, y -> x + y }
 	}
 }
