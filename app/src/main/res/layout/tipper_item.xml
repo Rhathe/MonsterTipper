@@ -9,7 +9,7 @@
 	<LinearLayout
 		android:orientation="horizontal"
 		android:padding="5dp"
-		android:layout_width="140dp"
+		android:layout_width="fill_parent"
 		android:layout_height="80dp">
 
 		<ImageView

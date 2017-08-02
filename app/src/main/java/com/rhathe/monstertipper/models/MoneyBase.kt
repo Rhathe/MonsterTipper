@@ -21,11 +21,14 @@ open class MoneyBase: Observable {
 		fieldMap[field] = value
 
 		val isNullable = _isNullable ?: false
-		var ret = if (isNullable) null else BigDecimal.ZERO
+		Log.e("safaf", currentField + " : " + field)
+		var ret = if (isNullable) {
+			if (field == currentField) BigDecimal.ZERO else null
+		} else BigDecimal.ZERO
+
 		try {
 			ret = BigDecimal(value)
-		} catch(e: Exception) {
-		}
+		} catch(e: Exception) {}
 
 		onToBigDecimal(field, ret)
 		return ret
@@ -37,6 +40,7 @@ open class MoneyBase: Observable {
 
 	@InverseMethod("nullableChecked")
 	fun enableNullable(field: String, isNullable: Boolean? = false, n: BigDecimal?, value: Boolean): BigDecimal? {
+		currentField = ""
 		if (isNullable == true) {
 			val ret = if (value) BigDecimal.ZERO else null
 			fieldMap[field] = ret?.toString() ?: ""
