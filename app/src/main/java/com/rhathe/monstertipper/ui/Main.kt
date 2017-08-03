@@ -1,18 +1,15 @@
 package com.rhathe.monstertipper.ui
 
-import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.R
 import com.rhathe.monstertipper.models.Meal
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import com.rhathe.monstertipper.adapters.TipperItemListAdapter

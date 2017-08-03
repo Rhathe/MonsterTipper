@@ -12,6 +12,9 @@ class Bill(
 		tip: BigDecimal? = null,
 		onTotalChange: (() -> Unit)? = null): MoneyBase() {
 
+	val ONE: BigDecimal = BigDecimal.ONE
+	val HUN: BigDecimal = BigDecimal(100)
+
 	var onTotalChange = onTotalChange
 	var storedValues = Values(tax=tax?:DEFAULT_TAX, tip=tip?:DEFAULT_TIP)
 	var newValues = storedValues.copy()
@@ -65,7 +68,7 @@ class Bill(
 	var tipOnTax: Boolean = false
 
 	override fun onToBigDecimal(field: String, value: BigDecimal?) {
-		calculateOtherFields(field, value)
+		if (field == currentField) calculateOtherFields(field, value)
 	}
 
 	fun calculateOtherFields(field: String, _n: BigDecimal?) {
@@ -87,12 +90,16 @@ class Bill(
 		setBase(total / taxAndTipFactor(tax, tip))
 	}
 
+	fun calculateTip(total: BigDecimal = getTotal(), base: BigDecimal = getBase(), tax: BigDecimal = getTax()) {
+		setTip((HUN * total - base * (HUN + tax)).setScale(2) / base.setScale(2))
+	}
+
 	fun calculateFromBase(base: BigDecimal = getBase()) {
 		calculateTotal(base = base)
 	}
 
 	fun calculateFromTotal(total: BigDecimal = getTotal()) {
-		calculateBase(total = total)
+		calculateTip(total = total)
 	}
 
 	fun calculateFromTax(tax: BigDecimal = getTax()) {
@@ -104,10 +111,8 @@ class Bill(
 	}
 
 	fun taxAndTipFactor(tax: BigDecimal = getTax(), tip: BigDecimal = getTip()): BigDecimal {
-		val one = BigDecimal.ONE
-		val hun = BigDecimal(100)
-		if (tipOnTax) return (one + tip/hun) * (one + tax/hun)
-		return one + (tip + tax)/hun
+		if (tipOnTax) return (ONE + tip/HUN) * (ONE + tax/HUN)
+		return ONE + (tip + tax)/HUN
 	}
 
 	fun resetBaseTotal() {

@@ -7,7 +7,7 @@ import java.math.BigDecimal
 
 class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 	val TIPPER_MIN = 0
-	val TIPPER_MAX = 20
+	val TIPPER_MAX = 100
 
 	@get:Bindable
 	val tippers = mutableListOf<Tipper>()
