@@ -75,7 +75,7 @@
 			<CheckBox
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Will Pay Only for Consumed Items"
+				android:text="Will Pay Only for Extra Items"
 				android:alpha="@{tipper.consumedItemsEnabled ? 1.0f : 0.2f}"
 				android:enabled="@{tipper.consumedItemsEnabled}"
 				android:checked="@={tipper.onlyConsumed}"/>
@@ -97,7 +97,7 @@
 					<include
 						layout="@layout/tippers_consumable_list"
 						app:type="@{`consumed`}"
-						app:columnText="@{`Consumed Items`}"
+						app:columnText="@{`Extra Items`}"
 						app:isEnabled="@{tipper.consumedItemsEnabled}"/>
 					<android.support.v7.widget.RecyclerView
 						android:id="@+id/consumed_items"
