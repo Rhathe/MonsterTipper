@@ -5,7 +5,7 @@ import android.util.Log
 import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 
-class Meal: MoneyBase() {
+class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 	val TIPPER_MIN = 0
 	val TIPPER_MAX = 20
 
@@ -36,7 +36,7 @@ class Meal: MoneyBase() {
 		registry.notifyChange(this, BR.evenSplit)
 	}
 
-	val bill = Bill(onTotalChange = onTotalChange)
+	val bill = Bill(tax = tax, tip = tip, onTotalChange = onTotalChange)
 
 	@Bindable
 	fun getEvenSplit(): BigDecimal {

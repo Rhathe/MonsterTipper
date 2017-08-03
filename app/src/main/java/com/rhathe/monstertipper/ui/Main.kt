@@ -1,8 +1,11 @@
 package com.rhathe.monstertipper.ui
 
+import android.content.Context
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -15,6 +18,7 @@ import android.view.View
 import com.rhathe.monstertipper.adapters.TipperItemListAdapter
 import com.rhathe.monstertipper.services.CurrentService
 import kotlinx.android.synthetic.main.content_main.*
+import java.math.BigDecimal
 
 
 class Main : AppCompatActivity() {
@@ -42,6 +46,10 @@ class Main : AppCompatActivity() {
 		// as you specify a parent activity in AndroidManifest.xml.
 		return when (item.itemId) {
 			R.id.action_reset -> { reset() }
+			R.id.action_settings -> {
+				startActivity(Intent(this, PreferencesActivity::class.java))
+				true
+			}
 			else -> super.onOptionsItemSelected(item)
 		}
 	}
@@ -64,7 +72,11 @@ class Main : AppCompatActivity() {
 	}
 
 	fun reset(): Boolean {
-		val meal = Meal()
+		val pref = PreferenceManager.getDefaultSharedPreferences(this)
+		val meal = Meal(
+			tax = BigDecimal(pref.getString("tax", "8.875")),
+			tip = BigDecimal(pref.getString("tip", "15"))
+		)
 		this.meal = meal
 		CurrentService.reset()
 		CurrentService.setAsCurrent(meal)

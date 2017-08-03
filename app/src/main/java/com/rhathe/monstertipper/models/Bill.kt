@@ -7,9 +7,16 @@ import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 
 
-class Bill(onTotalChange: (() -> Unit)? = null): MoneyBase() {
+class Bill(
+		tax: BigDecimal? = null,
+		tip: BigDecimal? = null,
+		onTotalChange: (() -> Unit)? = null): MoneyBase() {
+
+	val DEFAULT_TAX: BigDecimal = BigDecimal(8.875).setScale(3)
+	val DEFAULT_TIP: BigDecimal = BigDecimal(15).setScale(0)
+
 	var onTotalChange = onTotalChange
-	var storedValues = Values()
+	var storedValues = Values(tax=tax?:DEFAULT_TAX, tip=tip?:DEFAULT_TIP)
 	var newValues = storedValues.copy()
 
 	fun validateNewValues() {

@@ -31,6 +31,8 @@
 			android:name=".ui.ItemDetailActivity"
 			android:theme="@style/AppTheme.NoActionBar">
 		</activity>
+		<activity android:name=".ui.PreferencesActivity">
+		</activity>
 	</application>
 
 </manifest>
