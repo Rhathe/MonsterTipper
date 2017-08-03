@@ -3,7 +3,10 @@
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<data>
+		<import type="android.view.View"/>
 		<variable name="tipper" type="com.rhathe.monstertipper.models.Tipper"/>
+		<variable name="showRemove" type="Boolean"/>
+		<variable name="adapter" type="com.rhathe.monstertipper.adapters.TipperItemListAdapter"/>
 	</data>
 
 	<LinearLayout
@@ -12,6 +15,13 @@
 		android:layout_width="fill_parent"
 		android:layout_height="80dp">
 
+		<Button
+			android:layout_width="25dp"
+			android:layout_height="25dp"
+			android:layout_gravity="center"
+			android:visibility="@{showRemove == true ? View.VISIBLE : View.GONE }"
+			android:onClick="@{() -> adapter.removeFromList(tipper)}"
+			android:background="@android:drawable/presence_offline"/>
 		<ImageView
 			android:layout_width="70dp"
 			android:layout_height="70dp"

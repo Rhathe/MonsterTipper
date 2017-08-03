@@ -9,19 +9,4 @@ import com.rhathe.monstertipper.ui.ItemDetailActivity
 
 
 class ConsumableItemListAdapter(consumables: MutableList<Consumable>) :
-		BaseItemListAdapter(
-				consumables as MutableList<Any>,
-				R.layout.consumable_item,
-				BR.consumable,
-				activityClass = ItemDetailActivity::class.java) {
-
-	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-		super.onBindViewHolder(holder, position)
-		holder.setBinding(this, BR.adapter)
-	}
-
-	fun removeConsumable(consumable: Consumable) {
-		items.remove(consumable)
-		this.notifyDataSetChanged()
-	}
-}
+		BaseItemListAdapter(consumables as MutableList<Any>, R.layout.consumable_item, BR.consumable, activityClass = ItemDetailActivity::class.java)

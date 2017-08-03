@@ -7,4 +7,10 @@ import com.rhathe.monstertipper.ui.TipperDetailActivity
 
 
 class TipperItemListAdapter(tippers: MutableList<Tipper>) :
-		BaseItemListAdapter(tippers as MutableList<Any>, R.layout.tipper_item, BR.tipper, activityClass = TipperDetailActivity::class.java)
+		BaseItemListAdapter(tippers as MutableList<Any>, R.layout.tipper_item, BR.tipper, activityClass = TipperDetailActivity::class.java) {
+
+	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+		super.onBindViewHolder(holder, position)
+		holder.setBinding(true, BR.showRemove)
+	}
+}

@@ -12,9 +12,6 @@ class Bill(
 		tip: BigDecimal? = null,
 		onTotalChange: (() -> Unit)? = null): MoneyBase() {
 
-	val DEFAULT_TAX: BigDecimal = BigDecimal(8.875).setScale(3)
-	val DEFAULT_TIP: BigDecimal = BigDecimal(15).setScale(0)
-
 	var onTotalChange = onTotalChange
 	var storedValues = Values(tax=tax?:DEFAULT_TAX, tip=tip?:DEFAULT_TIP)
 	var newValues = storedValues.copy()
@@ -145,7 +142,12 @@ class Bill(
 	data class Values(
 		var base: BigDecimal = BigDecimal.ZERO.setScale(2),
 		var total: BigDecimal = BigDecimal.ZERO.setScale(2),
-		var tax: BigDecimal = BigDecimal(8.875).setScale(3),
-		var tip: BigDecimal = BigDecimal(15).setScale(0)
+		var tax: BigDecimal = DEFAULT_TAX,
+		var tip: BigDecimal = DEFAULT_TIP
 	)
+
+	companion object {
+		val DEFAULT_TAX: BigDecimal = BigDecimal(8.875).setScale(3)
+		val DEFAULT_TIP: BigDecimal = BigDecimal(15).setScale(0)
+	}
 }

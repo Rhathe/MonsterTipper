@@ -7,6 +7,7 @@ import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.services.CurrentService
 
 open class BaseItemListAdapter(
@@ -24,6 +25,7 @@ open class BaseItemListAdapter(
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 		val item = items[position]
 		holder.bind(item, brId)
+		holder.setBinding(this, BR.adapter)
 	}
 
 	override fun getItemCount(): Int {
@@ -34,5 +36,10 @@ open class BaseItemListAdapter(
 		val intent = Intent(ctx, activityClass)
 		CurrentService.setAsCurrent(item)
 		ctx.startActivity(intent)
+	}
+
+	fun removeFromList(item: Any) {
+		items.remove(item)
+		this.notifyDataSetChanged()
 	}
 }
