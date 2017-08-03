@@ -6,6 +6,7 @@
 
 	<data>
 		<import type="android.view.View"/>
+		<import type="com.rhathe.monstertipper.ui.TipperDetailActivity"/>
 		<variable name="tipper" type="com.rhathe.monstertipper.models.Tipper"/>
 	</data>
 
@@ -90,14 +91,14 @@
 					android:orientation="vertical"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
+					android:padding="5dp"
 					android:alpha="@{tipper.consumedItemsEnabled ? 1.0f : 0.2f}"
 					android:layout_weight="1">
-					<Button
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:onClick="addConsumedItem"
-						android:enabled="@{tipper.consumedItemsEnabled}"
-						android:text="Add Consumed Items"/>
+					<include
+						layout="@layout/tippers_consumable_list"
+						app:type="@{`consumed`}"
+						app:columnText="@{`Consumed Items`}"
+						app:isEnabled="@{tipper.consumedItemsEnabled}"/>
 					<android.support.v7.widget.RecyclerView
 						android:id="@+id/consumed_items"
 						android:layout_width="match_parent"
@@ -111,14 +112,14 @@
 					android:orientation="vertical"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
+					android:padding="5dp"
 					android:alpha="@{tipper.avoidedItemsEnabled ? 1.0f : 0.2f}"
 					android:layout_weight="1">
-					<Button
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:onClick="addAvoidedItem"
-						android:enabled="@{tipper.avoidedItemsEnabled}"
-						android:text="Add Avoided Items"/>
+					<include
+						layout="@layout/tippers_consumable_list"
+						app:type="@{`avoided`}"
+						app:columnText="@{`Avoided Items`}"
+						app:isEnabled="@{tipper.avoidedItemsEnabled}"/>
 					<android.support.v7.widget.RecyclerView
 						android:id="@+id/avoided_items"
 						android:layout_width="match_parent"

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<data>
+		<import type="com.rhathe.monstertipper.ui.TipperDetailActivity"/>
+		<variable name="isEnabled" type="Boolean"/>
+		<variable name="type" type="String"/>
+		<variable name="columnText" type="String"/>
+	</data>
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:gravity="center"
+			android:text="@{columnText}"/>
+		<Button
+			android:layout_width="35dp"
+			android:layout_height="35dp"
+			android:layout_marginRight="20dp"
+			android:onClick="@{_ -> ((TipperDetailActivity) context).addItem(type)}"
+			android:enabled="@{isEnabled}"
+			android:background="@android:drawable/ic_menu_add"/>
+	</LinearLayout>
+</layout>

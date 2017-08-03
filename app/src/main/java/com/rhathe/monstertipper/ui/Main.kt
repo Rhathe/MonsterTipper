@@ -70,8 +70,6 @@ class Main : BaseActivity() {
 	fun setupTipperItemRecyclerView() {
 		val layoutManager = GridLayoutManager(this, 2)
 		tipper_items.layoutManager = layoutManager
-		tipper_items.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-		tipper_items.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL))
 	}
 
 	fun reset(): Boolean {

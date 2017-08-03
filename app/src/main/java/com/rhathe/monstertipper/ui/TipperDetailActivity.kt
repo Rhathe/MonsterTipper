@@ -54,11 +54,14 @@ class TipperDetailActivity : BaseActivity() {
 		adapter?.goToItem(item as Any, applicationContext)
 	}
 
+	fun addItem(type: String) {
+		if (type == "avoided") addAvoidedItem()
+		else if (type == "consumed") addConsumedItem()
+	}
+
 	fun setupRecyclerView(items: MutableList<Consumable>, v: RecyclerView) {
 		val layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
 		v.layoutManager = layoutManager
 		v.adapter = ConsumableItemListAdapter(items)
-		v.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-		v.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL))
 	}
 }
