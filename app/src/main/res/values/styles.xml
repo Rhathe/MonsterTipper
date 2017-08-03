@@ -17,4 +17,8 @@
 
 	<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+	<style name="FieldText">
+		<item name="android:gravity">center</item>
+		<item name="android:padding">5dp</item>
+	</style>
 </resources>

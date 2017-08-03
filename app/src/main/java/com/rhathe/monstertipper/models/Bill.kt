@@ -7,10 +7,7 @@ import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 
 
-class Bill(
-			onTotalChange: (() -> Unit)? = null
-		): MoneyBase() {
-
+class Bill(onTotalChange: (() -> Unit)? = null): MoneyBase() {
 	var onTotalChange = onTotalChange
 	var storedValues = Values()
 	var newValues = storedValues.copy()
@@ -126,6 +123,16 @@ class Bill(
 			}
 		}
 		return true
+	}
+
+	override fun getLabel(field: String): String {
+		when(field) {
+			"total" -> return "Total ($)"
+			"base" -> return "Base ($)"
+			"tax" -> return "Tax (%)"
+			"tip" -> return "Tip (%)"
+		}
+		return super.getLabel(field)
 	}
 
 	data class Values(

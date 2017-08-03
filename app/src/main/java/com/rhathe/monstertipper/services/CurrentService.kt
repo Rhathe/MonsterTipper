@@ -12,5 +12,9 @@ class CurrentService {
 		fun getCurrent(cls: Class<*>): Any? {
 			return map[cls]
 		}
+
+		fun reset() {
+			map.clear()
+		}
 	}
 }

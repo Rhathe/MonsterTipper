@@ -41,20 +41,29 @@
 			android:orientation="horizontal"
 			android:gravity="end">
 
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:text="@{`Tippers`}"/>
+			<Space
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:layout_weight="1" />
 			<Button
 				android:id="@+id/less_tippers"
-				android:layout_width="70dp"
+				android:layout_width="50dp"
 				android:layout_height="@dimen/field_height"
 				android:onClick="removeTippers"
 				android:text="-"/>
-			<EditText
-				android:layout_width="70dp"
+			<TextView
+				android:layout_width="50dp"
 				android:layout_height="@dimen/field_height"
 				android:inputType="number"
+				android:textAlignment="center"
 				android:text="@{`` + meal.tippers.size}"/>
 			<Button
 				android:id="@+id/more_tippers"
-				android:layout_width="70dp"
+				android:layout_width="40dp"
 				android:layout_height="@dimen/field_height"
 				android:onClick="addTippers"
 				android:text="+"/>

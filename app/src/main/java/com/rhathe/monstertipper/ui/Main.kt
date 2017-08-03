@@ -18,20 +18,16 @@ import kotlinx.android.synthetic.main.content_main.*
 
 
 class Main : AppCompatActivity() {
-	var meal = Meal()
-
-	init {
-		CurrentService.setAsCurrent(meal)
-	}
+	var meal: Meal? = null
+	var binding: ViewDataBinding? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		val binding: ViewDataBinding = DataBindingUtil.setContentView(this, R.layout.main)
-		binding.setVariable(BR.meal, meal)
-
-		addTippers()
+		binding = DataBindingUtil.setContentView(this, R.layout.main)
+		binding?.setVariable(BR.meal, meal)
 		setupTipperItemRecyclerView()
+		reset()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -45,26 +41,35 @@ class Main : AppCompatActivity() {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		return when (item.itemId) {
-			R.id.action_settings -> true
+			R.id.action_reset -> { reset() }
 			else -> super.onOptionsItemSelected(item)
 		}
 	}
 
 	fun addTippers(v: View? = null) {
-		meal.addTippers()
+		meal?.addTippers()
 		tipper_items.adapter?.notifyDataSetChanged()
 	}
 
 	fun removeTippers(v: View? = null) {
-		meal.removeTippers()
+		meal?.removeTippers()
 		tipper_items.adapter?.notifyDataSetChanged()
 	}
 
 	fun setupTipperItemRecyclerView() {
 		val layoutManager = GridLayoutManager(this, 2)
 		tipper_items.layoutManager = layoutManager
-		tipper_items.adapter = TipperItemListAdapter(meal.tippers)
 		tipper_items.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 		tipper_items.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL))
+	}
+
+	fun reset(): Boolean {
+		val meal = Meal()
+		this.meal = meal
+		CurrentService.reset()
+		CurrentService.setAsCurrent(meal)
+		binding?.setVariable(BR.meal, meal)
+		tipper_items.adapter = TipperItemListAdapter(meal.tippers)
+		return true
 	}
 }

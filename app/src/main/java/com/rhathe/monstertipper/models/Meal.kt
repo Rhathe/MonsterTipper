@@ -5,11 +5,12 @@ import android.util.Log
 import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 
-class Meal(setAsCurrentMeal: Boolean = false): MoneyBase() {
+class Meal: MoneyBase() {
+	val TIPPER_MIN = 0
+	val TIPPER_MAX = 20
+
 	@get:Bindable
 	val tippers = mutableListOf<Tipper>()
-	val TIPPER_MIN = 1
-	val TIPPER_MAX = 20
 
 	val onTotalChange: () -> Unit = {
 		// Initialize each tipper to zero
