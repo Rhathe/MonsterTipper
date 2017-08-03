@@ -27,7 +27,9 @@
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="com.rhathe.monstertipper.ui.Main"/>
 		</activity>
-		<activity android:name=".ui.ItemDetailActivity">
+		<activity
+			android:name=".ui.ItemDetailActivity"
+			android:theme="@style/AppTheme.NoActionBar">
 		</activity>
 	</application>
 

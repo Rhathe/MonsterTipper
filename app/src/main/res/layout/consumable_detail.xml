@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
-		<variable name="item" type="com.rhathe.monstertipper.models.ConsumableItem"/>
+		<variable name="item" type="com.rhathe.monstertipper.models.Consumable"/>
 	</data>
 
 

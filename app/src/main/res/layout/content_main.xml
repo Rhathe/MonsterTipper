@@ -42,6 +42,7 @@
 			android:gravity="end">
 
 			<TextView
+				style="@style/FieldText"
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
 				android:text="@{`Tippers`}"/>
@@ -63,7 +64,7 @@
 				android:text="@{`` + meal.tippers.size}"/>
 			<Button
 				android:id="@+id/more_tippers"
-				android:layout_width="40dp"
+				android:layout_width="50dp"
 				android:layout_height="@dimen/field_height"
 				android:onClick="addTippers"
 				android:text="+"/>

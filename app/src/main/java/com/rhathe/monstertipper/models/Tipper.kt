@@ -23,8 +23,8 @@ class Tipper(name: String = ""): MoneyBase() {
 	var maxPay: BigDecimal? = null
 	var minPay: BigDecimal? = null
 
-	var consumedItems: MutableList<ConsumableItem> = mutableListOf()
-	var avoidedItems: MutableList<ConsumableItem> = mutableListOf()
+	var consumedItems: MutableList<Consumable> = mutableListOf()
+	var avoidedItems: MutableList<Consumable> = mutableListOf()
 
 	fun isSpecial(): Boolean {
 		return maxPay != null
@@ -59,14 +59,14 @@ class Tipper(name: String = ""): MoneyBase() {
 		return getConsumedItemsEnabled() && !onlyConsumed
 	}
 
-	fun addConsumedItem(): ConsumableItem {
-		val item = ConsumableItem("Eaten " + (consumedItems.size + 1))
+	fun addConsumedItem(): Consumable {
+		val item = Consumable("Eaten " + (consumedItems.size + 1))
 		consumedItems.add(item)
 		return item
 	}
 
-	fun addAvoidedItem(): ConsumableItem {
-		val item = ConsumableItem("Didn't Have " + (avoidedItems.size + 1))
+	fun addAvoidedItem(): Consumable {
+		val item = Consumable("Didn't Have " + (avoidedItems.size + 1))
 		avoidedItems.add(item)
 		return item
 	}
@@ -103,7 +103,7 @@ class Tipper(name: String = ""): MoneyBase() {
 		return consumedTotal - avoidedTotal
 	}
 
-	fun calculateTotalFromItemList(items: MutableList<ConsumableItem>): BigDecimal {
+	fun calculateTotalFromItemList(items: MutableList<Consumable>): BigDecimal {
 		return items.map { it.bill.newValues.total }.fold(BigDecimal.ZERO){ x, y -> x + y }
 	}
 }

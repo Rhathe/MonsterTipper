@@ -8,20 +8,20 @@ import android.view.View
 import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.R
 import com.rhathe.monstertipper.models.Tipper
-import com.rhathe.monstertipper.models.ConsumableItem
+import com.rhathe.monstertipper.models.Consumable
 import com.rhathe.monstertipper.services.CurrentService
 
 class ItemDetailActivity : AppCompatActivity() {
 	var tipper: Tipper? = null
-	var item: ConsumableItem? = null
+	var item: Consumable? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-		val binding: ViewDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_item_detail)
+		val binding: ViewDataBinding = DataBindingUtil.setContentView(this, R.layout.consumable_detail)
 		tipper = CurrentService.getCurrent(Tipper::class.java) as Tipper? ?: Tipper()
-		item = CurrentService.getCurrent(ConsumableItem::class.java) as ConsumableItem? ?: ConsumableItem()
+		item = CurrentService.getCurrent(Consumable::class.java) as Consumable? ?: Consumable()
 		binding.setVariable(BR.item, item)
 	}
 

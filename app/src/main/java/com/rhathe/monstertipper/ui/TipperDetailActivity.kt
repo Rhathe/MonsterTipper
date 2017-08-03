@@ -12,7 +12,7 @@ import android.widget.LinearLayout
 import com.rhathe.monstertipper.BR
 import com.rhathe.monstertipper.R
 import com.rhathe.monstertipper.adapters.ConsumableItemListAdapter
-import com.rhathe.monstertipper.models.ConsumableItem
+import com.rhathe.monstertipper.models.Consumable
 import com.rhathe.monstertipper.models.Tipper
 import com.rhathe.monstertipper.services.CurrentService
 import kotlinx.android.synthetic.main.tipper_detail.*
@@ -47,13 +47,13 @@ class TipperDetailActivity : AppCompatActivity() {
 		addItem(tipper?.addAvoidedItem(), avoided_items)
 	}
 
-	fun addItem(item: ConsumableItem?, v: RecyclerView) {
+	fun addItem(item: Consumable?, v: RecyclerView) {
 		val adapter = v.adapter as ConsumableItemListAdapter?
 		adapter?.notifyDataSetChanged()
 		adapter?.goToItem(item as Any, applicationContext)
 	}
 
-	fun setupRecyclerView(items: MutableList<ConsumableItem>, v: RecyclerView) {
+	fun setupRecyclerView(items: MutableList<Consumable>, v: RecyclerView) {
 		val layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
 		v.layoutManager = layoutManager
 		v.adapter = ConsumableItemListAdapter(items)
