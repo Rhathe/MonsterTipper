@@ -31,9 +31,17 @@ class Meal: MoneyBase() {
 
 		// Split the remaining among the eligible tippers
 		calculateSplit(tippersGrouped["dynamicPay"], remaining)
+
+		// Notify data binding change for even split
+		registry.notifyChange(this, BR.evenSplit)
 	}
 
 	val bill = Bill(onTotalChange = onTotalChange)
+
+	@Bindable
+	fun getEvenSplit(): BigDecimal {
+		return bill.getTotal() / BigDecimal.ONE.max(BigDecimal(tippers.size))
+	}
 
 	fun addTippers() {
 		if (tippers.size >= TIPPER_MAX) return

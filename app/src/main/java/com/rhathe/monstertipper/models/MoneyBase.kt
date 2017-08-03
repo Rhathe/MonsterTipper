@@ -21,7 +21,6 @@ open class MoneyBase: Observable {
 		fieldMap[field] = value
 
 		val isNullable = _isNullable ?: false
-		Log.e("safaf", currentField + " : " + field)
 		var ret = if (isNullable) {
 			if (field == currentField) BigDecimal.ZERO else null
 		} else BigDecimal.ZERO
