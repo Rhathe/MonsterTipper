@@ -1,5 +1,6 @@
 package com.rhathe.monstertipper.ui
 
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
@@ -18,7 +19,7 @@ import com.rhathe.monstertipper.services.CurrentService
 import kotlinx.android.synthetic.main.tipper_detail.*
 
 
-class TipperDetailActivity : AppCompatActivity() {
+class TipperDetailActivity : BaseActivity() {
 	var tipper: Tipper? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,8 +48,6 @@ class TipperDetailActivity : AppCompatActivity() {
 		addItem(tipper?.addAvoidedItem(), avoided_items)
 	}
 
-	fun removeBlahItem() {}
-
 	fun addItem(item: Consumable?, v: RecyclerView) {
 		val adapter = v.adapter as ConsumableItemListAdapter?
 		adapter?.notifyDataSetChanged()
@@ -61,9 +60,5 @@ class TipperDetailActivity : AppCompatActivity() {
 		v.adapter = ConsumableItemListAdapter(items)
 		v.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 		v.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL))
-	}
-
-	fun finish(@Suppress("UNUSED_PARAMETER") v: View) {
-		finish()
 	}
 }

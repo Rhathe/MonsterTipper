@@ -43,11 +43,15 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		return bill.getTotal() / BigDecimal.ONE.max(BigDecimal(tippers.size))
 	}
 
+	fun notifyTippersChanged() {
+		registry.notifyChange(this, BR.tippers)
+	}
+
 	fun addTippers() {
 		if (tippers.size >= TIPPER_MAX) return
 		val tipper = Tipper()
 		tippers.add(tipper)
-		registry.notifyChange(this, BR.tippers)
+		notifyTippersChanged()
 	}
 
 	fun removeTippers() {
@@ -55,7 +59,7 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 			if (tippers.size <= TIPPER_MIN) return
 			val index = tippers.size - 1
 			tippers.removeAt(index)
-			registry.notifyChange(this, BR.tippers)
+			notifyTippersChanged()
 		} catch(_: Exception) {}
 	}
 

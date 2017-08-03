@@ -11,7 +11,7 @@ import com.rhathe.monstertipper.models.Tipper
 import com.rhathe.monstertipper.models.Consumable
 import com.rhathe.monstertipper.services.CurrentService
 
-class ItemDetailActivity : AppCompatActivity() {
+class ConsumableDetailActivity : BaseActivity() {
 	var tipper: Tipper? = null
 	var item: Consumable? = null
 
@@ -23,9 +23,5 @@ class ItemDetailActivity : AppCompatActivity() {
 		tipper = CurrentService.getCurrent(Tipper::class.java) as Tipper? ?: Tipper()
 		item = CurrentService.getCurrent(Consumable::class.java) as Consumable? ?: Consumable()
 		binding.setVariable(BR.consumable, item)
-	}
-
-	fun finish(@Suppress("UNUSED_PARAMETER") v: View) {
-		finish()
 	}
 }

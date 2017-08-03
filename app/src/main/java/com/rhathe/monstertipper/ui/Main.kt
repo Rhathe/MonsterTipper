@@ -19,9 +19,12 @@ import com.rhathe.monstertipper.adapters.TipperItemListAdapter
 import com.rhathe.monstertipper.services.CurrentService
 import kotlinx.android.synthetic.main.content_main.*
 import java.math.BigDecimal
+import android.support.v7.widget.RecyclerView
 
 
-class Main : AppCompatActivity() {
+
+
+class Main : BaseActivity() {
 	var meal: Meal? = null
 	var binding: ViewDataBinding? = null
 
@@ -81,7 +84,17 @@ class Main : AppCompatActivity() {
 		CurrentService.reset()
 		CurrentService.setAsCurrent(meal)
 		binding?.setVariable(BR.meal, meal)
-		tipper_items.adapter = TipperItemListAdapter(meal.tippers)
+		val adapter = TipperItemListAdapter(meal.tippers)
+		tipper_items.adapter = adapter
+
+		// Number of tippers needs to be updated
+		adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+			override fun onChanged() {
+				meal.notifyTippersChanged()
+				super.onChanged()
+			}
+		})
+
 		return true
 	}
 }
