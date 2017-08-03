@@ -4,20 +4,32 @@
 
 	<data>
 		<variable name="consumable" type="com.rhathe.monstertipper.models.Consumable"/>
+		<variable name="adapter" type="com.rhathe.monstertipper.adapters.ConsumableItemListAdapter"/>
 	</data>
 
 	<LinearLayout
-		android:orientation="vertical"
-		android:padding="5dp"
+		android:orientation="horizontal"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@{consumable.name}"/>
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@{`$` + consumable.bill.base}"/>
+		<Button
+			android:layout_width="25dp"
+			android:layout_height="25dp"
+			android:layout_gravity="center"
+			android:onClick="@{() -> adapter.removeConsumable(consumable)}"
+			android:background="@android:drawable/presence_offline"/>
+		<LinearLayout
+			android:orientation="vertical"
+			android:padding="5dp"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@{consumable.name}"/>
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@{`$` + consumable.bill.base}"/>
+		</LinearLayout>
 	</LinearLayout>
 </layout>

@@ -7,4 +7,4 @@ import com.rhathe.monstertipper.ui.TipperDetailActivity
 
 
 class TipperItemListAdapter(tippers: MutableList<Tipper>) :
-		BaseItemListAdapter(tippers as MutableList<Any>, R.layout.tipper_item, BR.tipper, TipperDetailActivity::class.java)
+		BaseItemListAdapter(tippers as MutableList<Any>, R.layout.tipper_item, BR.tipper, activityClass = TipperDetailActivity::class.java)

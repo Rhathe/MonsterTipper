@@ -47,6 +47,8 @@ class TipperDetailActivity : AppCompatActivity() {
 		addItem(tipper?.addAvoidedItem(), avoided_items)
 	}
 
+	fun removeBlahItem() {}
+
 	fun addItem(item: Consumable?, v: RecyclerView) {
 		val adapter = v.adapter as ConsumableItemListAdapter?
 		adapter?.notifyDataSetChanged()

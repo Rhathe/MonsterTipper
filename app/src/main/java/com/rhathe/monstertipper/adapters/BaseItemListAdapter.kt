@@ -9,8 +9,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.rhathe.monstertipper.services.CurrentService
 
-open class BaseItemListAdapter(val items: MutableList<Any>, val layoutId: Int, val brId: Int, val activityClass: Class<*>? = null) :
-		RecyclerView.Adapter<ViewHolder>() {
+open class BaseItemListAdapter(
+		val items: MutableList<Any>,
+		val layoutId: Int,
+		val brId: Int,
+		val activityClass: Class<*>? = null) : RecyclerView.Adapter<ViewHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val inflater = LayoutInflater.from(parent.context)
