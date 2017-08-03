@@ -103,10 +103,12 @@ class Tipper(name: String = ""): MoneyBase() {
 		return calculateTotal(total + bill.getTotal())
 	}
 
-	fun calculateDifferenceFromItems(): BigDecimal {
-		val consumedTotal = calculateTotalFromItemList(consumedItems)
-		val avoidedTotal = calculateTotalFromItemList(avoidedItems)
-		return consumedTotal - avoidedTotal
+	fun calculateDifferenceFromExtras(): BigDecimal {
+		return calculateTotalFromItemList(consumedItems)
+	}
+
+	fun calculateDifferenceFromAvoided(): BigDecimal {
+		return calculateTotalFromItemList(avoidedItems)
 	}
 
 	fun calculateTotalFromItemList(items: MutableList<Consumable>): BigDecimal {

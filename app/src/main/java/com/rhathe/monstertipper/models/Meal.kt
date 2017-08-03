@@ -27,10 +27,13 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 
 		// Calculate remaining from tip and items values
 		var remaining = bill.getTotal() - calculateWillPayersTotal(tippersGrouped["staticPay"])
-		remaining -= calculateItemsDifferenceTotal(tippersGrouped["dynamicPay"])
+		remaining -= calculateDifferenceFromExtrasTotal(tippersGrouped["dynamicPay"])
 
 		// Split the remaining among the eligible tippers
 		calculateSplit(tippersGrouped["dynamicPay"], remaining)
+
+		// Redistribute if tippers avoided items
+		redistributeOnAvoidedItems(tippersGrouped["dynamicPay"])
 
 		// Notify data binding change for even split
 		registry.notifyChange(this, BR.evenSplit)
@@ -67,9 +70,9 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		return calculateTippersValuesTotal(tippers, { it.bill.newValues.total })
 	}
 
-	fun calculateItemsDifferenceTotal(tippers: List<Tipper>?): BigDecimal {
+	fun calculateDifferenceFromExtrasTotal(tippers: List<Tipper>?): BigDecimal {
 		return calculateTippersValuesTotal(tippers, {
-			val diff = it.calculateDifferenceFromItems()
+			val diff = it.calculateDifferenceFromExtras()
 			it.addToTotal(diff)
 			diff
 		})
@@ -79,14 +82,33 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		return tippers?.map(fn)?.fold(BigDecimal.ZERO){ x, y -> x + y } ?: BigDecimal.ZERO
 	}
 
-	fun calculateSplit(tippers: List<Tipper>?, remaining: BigDecimal) {
+	fun distributeToTippers(tippers: List<Tipper>?, total: BigDecimal) {
 		val size = tippers?.size ?: 0
-		val split = remaining / BigDecimal(if (size > 0) size else 1)
-		var remaining = remaining
+		val split = total / BigDecimal(if (size > 0) size else 1)
+		var remaining = total
 		tippers?.forEach {
 			val totalAdd = if (remaining > split) split else remaining.max(BigDecimal.ZERO)
 			it.addToTotal(totalAdd)
 			remaining -= split
+		}
+	}
+
+	fun calculateSplit(tippers: List<Tipper>?, remaining: BigDecimal) {
+		distributeToTippers(tippers, remaining)
+	}
+
+	fun redistributeOnAvoidedItems(tippers: List<Tipper>?) {
+		if (tippers?.size?.compareTo(1) == 1) {
+			tippers?.forEach {
+				val tipper = it
+				val avoided = it.calculateDifferenceFromAvoided()
+				if (avoided.compareTo(BigDecimal.ZERO) == 1) {
+					val split = avoided / BigDecimal(tippers.size).setScale(2)
+					tipper.addToTotal(-split)
+					val newTippers = tippers.filter { it != tipper }
+					distributeToTippers(newTippers, split)
+				}
+			}
 		}
 	}
 }
