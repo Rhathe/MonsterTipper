@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
-		<variable name="item" type="com.rhathe.monstertipper.models.Consumable"/>
+		<variable name="consumable" type="com.rhathe.monstertipper.models.Consumable"/>
 	</data>
 
 
@@ -19,19 +19,30 @@
 			android:layout_height="wrap_content"
 			tools:context="com.rhathe.monstertipper.ui.ItemDetailActivity">
 
-			<EditText
-				android:id="@+id/item_name"
-				android:layout_width="200dp"
-				android:layout_height="@dimen/field_height"
-				android:hint="Food Item Name"
-				android:text="@={item.name}"/>
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+				<EditText
+					android:id="@+id/item_name"
+					android:layout_width="200dp"
+					android:layout_height="@dimen/field_height"
+					android:hint="Food Item Name"
+					android:text="@={consumable.name}"/>
+				<Button
+					android:layout_width="wrap_content"
+					android:layout_height="50dp"
+					android:text="Clear Name"
+					android:layout_gravity="end"
+					android:onClick="@{() -> consumable.setName(``)}"/>
+			</LinearLayout>
 
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 				<include
-					app:object="@{item.bill}"
-					app:field="@={item.bill.base}"
+					app:object="@{consumable.bill}"
+					app:field="@={consumable.bill.base}"
 					app:fieldName="@{`base`}"
 					layout="@layout/money_base_field"/>
 			</LinearLayout>

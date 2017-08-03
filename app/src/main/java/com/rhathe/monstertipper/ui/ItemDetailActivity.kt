@@ -22,7 +22,7 @@ class ItemDetailActivity : AppCompatActivity() {
 		val binding: ViewDataBinding = DataBindingUtil.setContentView(this, R.layout.consumable_detail)
 		tipper = CurrentService.getCurrent(Tipper::class.java) as Tipper? ?: Tipper()
 		item = CurrentService.getCurrent(Consumable::class.java) as Consumable? ?: Consumable()
-		binding.setVariable(BR.item, item)
+		binding.setVariable(BR.consumable, item)
 	}
 
 	fun finish(@Suppress("UNUSED_PARAMETER") v: View) {

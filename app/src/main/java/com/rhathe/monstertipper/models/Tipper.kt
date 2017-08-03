@@ -7,9 +7,15 @@ import java.math.BigDecimal
 
 
 class Tipper(name: String = ""): MoneyBase() {
-	var name: String = if (name.isNotBlank()) name else NameService.instance?.getName() ?: ""
 	var bill: Bill = Bill()
 	var onlyConsumed: Boolean = false
+
+	@get:Bindable
+	var name: String = if (name.isNotBlank()) name else NameService.instance?.getName() ?: ""
+		set(name) {
+			field = name
+			registry.notifyChange(this, BR.name)
+		}
 
 	@get:Bindable
 	var willPay: BigDecimal? = null

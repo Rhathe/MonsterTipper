@@ -43,6 +43,24 @@
 			</LinearLayout>
 
 			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+				<EditText
+					android:id="@+id/tipper_name"
+					android:layout_width="200dp"
+					android:layout_height="@dimen/field_height"
+					android:hint="Tipper Name"
+					android:text="@={tipper.name}"/>
+				<Button
+					android:layout_width="wrap_content"
+					android:layout_height="50dp"
+					android:text="Clear Name"
+					android:layout_gravity="end"
+					android:onClick="@{() -> tipper.setName(``)}"/>
+			</LinearLayout>
+
+			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 				<include
