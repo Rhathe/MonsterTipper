@@ -34,6 +34,9 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		// Redistribute if tippers avoided items
 		redistributeOnAvoidedItems(tippersGrouped["dynamicPay"])
 
+		// Calculate tippers' other fields from total
+		tippers.forEach { it.bill.calculateOtherFields("total", it.bill.getTotal()) }
+
 		// Notify data binding change for even split
 		registry.notifyChange(this, BR.evenSplit)
 	}

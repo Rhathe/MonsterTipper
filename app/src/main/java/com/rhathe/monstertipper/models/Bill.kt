@@ -45,6 +45,7 @@ class Bill(
 		newValues.base = base.setScale(2, BigDecimal.ROUND_UP)
 		validateNewValues()
 		registry.notifyChange(this, BR.base)
+		registry.notifyChange(this, BR.tipInDollars)
 	}
 
 	@Bindable
@@ -63,7 +64,11 @@ class Bill(
 		newValues.tip = tip
 		validateNewValues()
 		registry.notifyChange(this, BR.tip)
+		registry.notifyChange(this, BR.tipInDollars)
 	}
+
+	@Bindable
+	fun getTipInDollars(): BigDecimal { return (getTip() * getBase())/ HUN}
 
 	var tipOnTax: Boolean = false
 
@@ -73,13 +78,13 @@ class Bill(
 
 	fun calculateOtherFields(field: String, _n: BigDecimal?) {
 		val fields = listOf("total", "base", "tax", "tip")
-		fields.forEach({x -> if (x != currentField) fieldMap.remove(x)})
+		fields.forEach({x -> if (x != field) fieldMap.remove(x)})
 
 		val n = _n ?: BigDecimal.ZERO
-		if (currentField == "base") calculateFromBase(n)
-		else if (currentField == "total") calculateFromTotal(n)
-		else if (currentField == "tip") calculateFromTip(n)
-		else if (currentField == "tax") calculateFromTax(n)
+		if (field == "base") calculateFromBase(n)
+		else if (field == "total") calculateFromTotal(n)
+		else if (field == "tip") calculateFromTip(n)
+		else if (field == "tax") calculateFromTax(n)
 	}
 
 	fun calculateTotal(base: BigDecimal = getBase(), tax: BigDecimal = getTax(), tip: BigDecimal = getTip()) {
@@ -99,7 +104,8 @@ class Bill(
 	}
 
 	fun calculateFromTotal(total: BigDecimal = getTotal()) {
-		calculateTip(total = total)
+		if (getBase().compareTo(BigDecimal.ZERO) == 0) calculateBase()
+		else calculateTip(total = total)
 	}
 
 	fun calculateFromTax(tax: BigDecimal = getTax()) {
