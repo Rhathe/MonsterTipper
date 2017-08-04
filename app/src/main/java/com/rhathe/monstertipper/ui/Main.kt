@@ -74,7 +74,10 @@ class Main : BaseActivity() {
 			tax = BigDecimal(pref.getString("tax", "8.875")),
 			tip = BigDecimal(pref.getString("tip", "15"))
 		)
+
+		this.meal?.destroy()
 		this.meal = meal
+
 		CurrentService.reset()
 		Tipper.resetNames()
 		CurrentService.setAsCurrent(meal)

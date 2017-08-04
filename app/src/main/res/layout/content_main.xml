@@ -31,6 +31,12 @@
 
 		<include
 			app:object="@{meal.bill}"
+			app:field="@={meal.bill.tipInDollars}"
+			app:fieldName="@{`tipInDollars`}"
+			layout="@layout/money_base_field"/>
+
+		<include
+			app:object="@{meal.bill}"
 			app:field="@={meal.bill.total}"
 			app:fieldName="@{`total`}"
 			layout="@layout/money_base_field"/>

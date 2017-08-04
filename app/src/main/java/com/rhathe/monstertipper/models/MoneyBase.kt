@@ -29,7 +29,6 @@ open class MoneyBase: Observable {
 			ret = BigDecimal(value)
 		} catch(e: Exception) {}
 
-		onToBigDecimal(field, ret)
 		return ret
 	}
 

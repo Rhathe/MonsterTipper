@@ -41,7 +41,7 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		registry.notifyChange(this, BR.evenSplit)
 	}
 
-	val bill = Bill(tax = tax, tip = tip, onTotalChange = onTotalChange)
+	val bill = Bill(tax = tax, tip = tip, onTotalChange = onTotalChange, dynamicRecalculation = true)
 
 	@Bindable
 	fun getEvenSplit(): BigDecimal {
@@ -112,5 +112,9 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 				}
 			}
 		}
+	}
+
+	fun destroy() {
+		bill.destroy()
 	}
 }

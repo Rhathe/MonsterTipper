@@ -10,14 +10,43 @@ import java.math.BigDecimal
 class Bill(
 		tax: BigDecimal? = null,
 		tip: BigDecimal? = null,
-		onTotalChange: (() -> Unit)? = null): MoneyBase() {
+		var onTotalChange: (() -> Unit)? = null,
+		dynamicRecalculation: Boolean = false): MoneyBase() {
 
-	val ONE: BigDecimal = BigDecimal.ONE
-	val HUN: BigDecimal = BigDecimal(100)
+	private val ONE: BigDecimal = BigDecimal.ONE
+	private val HUN: BigDecimal = BigDecimal(100)
+	private val listOfFields = listOf("total", "base", "tax", "tip", "tipInDollars")
 
-	var onTotalChange = onTotalChange
 	var storedValues = Values(tax=tax?:DEFAULT_TAX, tip=tip?:DEFAULT_TIP)
 	var newValues = storedValues.copy()
+
+	private val calculateOthersCallback = object: Observable.OnPropertyChangedCallback() {
+		override fun onPropertyChanged(p0: Observable?, p1: Int) {
+			when (p1) {
+				BR.total -> calculateWhenCurrentField("total", getTotal())
+				BR.base -> calculateWhenCurrentField("base", getBase())
+				BR.tax -> calculateWhenCurrentField("tax", getTax())
+				BR.tip -> calculateWhenCurrentField("tip", getTip())
+				BR.tipInDollars -> calculateWhenCurrentField("tipInDollars", getTip())
+			}
+		}
+	}
+
+	init {
+		if (dynamicRecalculation) enableDynamicRecalculation()
+	}
+
+	fun enableDynamicRecalculation() {
+		registry.add(calculateOthersCallback)
+	}
+
+	fun disableDynamicRecalculation() {
+		registry.remove(calculateOthersCallback)
+	}
+
+	fun destroy() {
+		disableDynamicRecalculation()
+	}
 
 	fun validateNewValues() {
 		storedValues = newValues.copy()
@@ -61,30 +90,42 @@ class Bill(
 	fun getTip(): BigDecimal { return newValues.tip }
 
 	fun setTip(tip: BigDecimal) {
-		newValues.tip = tip
+		newValues.tip = tip.setScale(minOf(tip.scale(), 3), BigDecimal.ROUND_UP)
 		validateNewValues()
 		registry.notifyChange(this, BR.tip)
 		registry.notifyChange(this, BR.tipInDollars)
 	}
 
 	@Bindable
-	fun getTipInDollars(): BigDecimal { return (getTip() * getBase())/ HUN}
+	fun getTipInDollars(): BigDecimal { return ((getTip() * getBase())/ HUN).setScale(2, BigDecimal.ROUND_UP) }
+
+	@Bindable
+	fun setTipInDollars(tipInDollars: BigDecimal) {
+		// Prevent recursiveness
+		if (currentField != "tipInDollars") return
+
+		val newTip = calculateTipFromTipInDollars(tipInDollars)
+		if (newTip != null) setTip(newTip)
+	}
 
 	var tipOnTax: Boolean = false
 
-	override fun onToBigDecimal(field: String, value: BigDecimal?) {
+	fun calculateWhenCurrentField(field: String, value: BigDecimal?) {
 		if (field == currentField) calculateOtherFields(field, value)
 	}
 
 	fun calculateOtherFields(field: String, _n: BigDecimal?) {
-		val fields = listOf("total", "base", "tax", "tip")
-		fields.forEach({x -> if (x != field) fieldMap.remove(x)})
-
+		listOfFields.forEach({x -> if (x != field) fieldMap.remove(x)})
 		val n = _n ?: BigDecimal.ZERO
 		if (field == "base") calculateFromBase(n)
 		else if (field == "total") calculateFromTotal(n)
-		else if (field == "tip") calculateFromTip(n)
+		else if (field == "tip" || field == "tipInDollars") calculateFromTip(n)
 		else if (field == "tax") calculateFromTax(n)
+	}
+
+	fun calculateTipFromTipInDollars(tipInDollars: BigDecimal): BigDecimal? {
+		try { return (tipInDollars * HUN) / getBase() }
+		catch(e: Exception) { return null }
 	}
 
 	fun calculateTotal(base: BigDecimal = getBase(), tax: BigDecimal = getTax(), tip: BigDecimal = getTip()) {
@@ -96,7 +137,7 @@ class Bill(
 	}
 
 	fun calculateTip(total: BigDecimal = getTotal(), base: BigDecimal = getBase(), tax: BigDecimal = getTax()) {
-		setTip((HUN * total - base * (HUN + tax)).setScale(2) / base.setScale(2))
+		setTip((HUN * total - base * (HUN + tax)).setScale(2, BigDecimal.ROUND_UP) / base.setScale(2, BigDecimal.ROUND_UP))
 	}
 
 	fun calculateFromBase(base: BigDecimal = getBase()) {
@@ -134,7 +175,9 @@ class Bill(
 	override fun isFieldEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {
 		when(field) {
 			"total" -> {
-				if (getBase().setScale(2) == BigDecimal.ZERO.setScale(2)) return false
+				if (getBase().compareTo(BigDecimal.ZERO) == 0) return false
+			} "tipInDollars" -> {
+				if (getBase().compareTo(BigDecimal.ZERO) == 0) return false
 			}
 		}
 		return true
