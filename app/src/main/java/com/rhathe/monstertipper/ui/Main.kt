@@ -17,8 +17,7 @@ import com.rhathe.monstertipper.services.CurrentService
 import kotlinx.android.synthetic.main.content_main.*
 import java.math.BigDecimal
 import android.support.v7.widget.RecyclerView
-
-
+import com.rhathe.monstertipper.models.Tipper
 
 
 class Main : BaseActivity() {
@@ -77,6 +76,7 @@ class Main : BaseActivity() {
 		)
 		this.meal = meal
 		CurrentService.reset()
+		Tipper.resetNames()
 		CurrentService.setAsCurrent(meal)
 		binding?.setVariable(BR.meal, meal)
 		val adapter = TipperItemListAdapter(meal.tippers)

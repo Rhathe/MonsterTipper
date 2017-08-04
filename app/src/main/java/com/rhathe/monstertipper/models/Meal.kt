@@ -1,7 +1,6 @@
 package com.rhathe.monstertipper.models
 
 import android.databinding.Bindable
-import android.util.Log
 import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 

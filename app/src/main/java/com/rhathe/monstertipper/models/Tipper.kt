@@ -11,7 +11,7 @@ class Tipper(name: String = ""): MoneyBase() {
 	var onlyConsumed: Boolean = false
 
 	@get:Bindable
-	var name: String = if (name.isNotBlank()) name else NameService.instance?.getName() ?: ""
+	var name: String = if (name.isNotBlank()) name else getName()
 		set(name) {
 			field = name
 			registry.notifyChange(this, BR.name)
@@ -113,5 +113,18 @@ class Tipper(name: String = ""): MoneyBase() {
 
 	fun calculateTotalFromItemList(items: MutableList<Consumable>): BigDecimal {
 		return items.map { it.bill.newValues.total }.fold(BigDecimal.ZERO){ x, y -> x + y }
+	}
+
+	companion object {
+		var tipper_name_index = 0
+
+		fun getName(): String {
+			tipper_name_index += 1
+			return "M-Tipper " + tipper_name_index
+		}
+
+		fun resetNames() {
+			tipper_name_index = 0
+		}
 	}
 }
