@@ -188,6 +188,7 @@ class Bill(
 			"base" -> return "Base ($)"
 			"tax" -> return "Tax (%)"
 			"tip" -> return "Tip (%)"
+			"tipInDollars" -> return "Tip In Dollars ($)"
 		}
 		return super.getLabel(field)
 	}
