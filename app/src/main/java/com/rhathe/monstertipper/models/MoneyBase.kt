@@ -52,8 +52,6 @@ open class MoneyBase: Observable {
 		else if (currentField == s) currentField = ""
 	}
 
-	open fun onToBigDecimal(field: String, value: BigDecimal?) {}
-
 	open fun isFieldEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {
 		return true
 	}

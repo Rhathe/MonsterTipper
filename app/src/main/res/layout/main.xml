@@ -17,13 +17,14 @@
 		android:focusableInTouchMode="true"
 		tools:context="com.rhathe.monstertipper.ui.Main">
 
-		<ScrollView
+		<android.support.v4.widget.NestedScrollView
 			android:layout_width="match_parent"
+			android:fillViewport="true"
 			android:layout_height="match_parent">
 			<include
 				app:meal="@{meal}"
 				layout="@layout/content_main"/>
-		</ScrollView>
+		</android.support.v4.widget.NestedScrollView>
 
 
 	</android.support.design.widget.CoordinatorLayout>

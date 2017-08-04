@@ -11,7 +11,7 @@
 	</data>
 
 
-	<ScrollView
+	<android.support.v4.widget.NestedScrollView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
@@ -102,7 +102,7 @@
 					<android.support.v7.widget.RecyclerView
 						android:id="@+id/consumed_items"
 						android:layout_width="match_parent"
-						android:layout_height="match_parent"
+						android:layout_height="wrap_content"
 						android:visibility="@{tipper.consumedItemsEnabled ? View.VISIBLE : View.GONE}"
 						tools:listitem="@layout/consumable_item"/>
 				</LinearLayout>
@@ -123,7 +123,7 @@
 					<android.support.v7.widget.RecyclerView
 						android:id="@+id/avoided_items"
 						android:layout_width="match_parent"
-						android:layout_height="match_parent"
+						android:layout_height="wrap_content"
 						android:visibility="@{tipper.avoidedItemsEnabled ? View.VISIBLE : View.GONE}"
 						tools:listitem="@layout/consumable_item"/>
 				</LinearLayout>
@@ -132,6 +132,6 @@
 
 
 		</LinearLayout>
-	</ScrollView>
+	</android.support.v4.widget.NestedScrollView>
 
 </layout>

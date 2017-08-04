@@ -57,13 +57,8 @@ class Bill(
 
 	fun setTotal(total: BigDecimal) {
 		newValues.total = total.setScale(2, BigDecimal.ROUND_UP)
-
-		try {
-			onTotalChange?.invoke()
-			validateNewValues()
-		} catch(e: Exception) {
-			newValues = storedValues.copy()
-		}
+		onTotalChange?.invoke()
+		validateNewValues()
 		registry.notifyChange(this, BR.total)
 	}
 
@@ -133,11 +128,15 @@ class Bill(
 	}
 
 	fun calculateBase(total: BigDecimal = getTotal(), tax: BigDecimal = getTax(), tip: BigDecimal = getTip()) {
-		setBase(total / taxAndTipFactor(tax, tip))
+		try {
+			setBase(total / taxAndTipFactor(tax, tip))
+		} catch(e: Exception) {}
 	}
 
 	fun calculateTip(total: BigDecimal = getTotal(), base: BigDecimal = getBase(), tax: BigDecimal = getTax()) {
-		setTip((HUN * total - base * (HUN + tax)).setScale(2, BigDecimal.ROUND_UP) / base.setScale(2, BigDecimal.ROUND_UP))
+		try {
+			setTip((HUN * total - base * (HUN + tax)).setScale(2, BigDecimal.ROUND_UP) / base.setScale(2, BigDecimal.ROUND_UP))
+		} catch(e: Exception) {}
 	}
 
 	fun calculateFromBase(base: BigDecimal = getBase()) {
