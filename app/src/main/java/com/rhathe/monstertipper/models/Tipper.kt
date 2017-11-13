@@ -2,7 +2,6 @@ package com.rhathe.monstertipper.models
 
 import android.databinding.Bindable
 import com.rhathe.monstertipper.BR
-import com.rhathe.monstertipper.services.NameService
 import java.math.BigDecimal
 
 

@@ -35,7 +35,10 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		redistributeOnAvoidedItems(tippersGrouped["dynamicPay"])
 
 		// Calculate tippers' other fields from total
-		tippers.forEach { it.bill.calculateOtherFields("total", it.bill.getTotal()) }
+		tippers.forEach {
+			it.bill.setBase(BigDecimal.ZERO)
+			it.bill.calculateOtherFields("total", it.bill.getTotal())
+		}
 
 		// Notify data binding change for even split
 		registry.notifyChange(this, BR.evenSplit)

@@ -121,7 +121,7 @@ class Bill(
 		if (field == currentField) calculateOtherFields(field, value)
 	}
 
-	fun calculateOtherFields(field: String, _n: BigDecimal?) {
+	fun calculateOtherFields(field: String, _n: BigDecimal?, lockedFields: List<String>? = null) {
 		listOfFields.forEach({x -> if (x != field) fieldMap.remove(x)})
 		val n = _n ?: BigDecimal.ZERO
 		if (field == "base" || field == "baseWithTax") calculateFromBase(n)

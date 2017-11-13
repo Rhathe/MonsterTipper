@@ -24,6 +24,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content">
 				<EditText
+					style="@style/FieldEditText"
 					android:id="@+id/item_name"
 					android:layout_width="200dp"
 					android:layout_height="@dimen/field_height"

@@ -29,6 +29,7 @@
 			android:layout_height="0dp"
 			android:layout_weight="1" />
 		<EditText
+			style="@style/FieldEditText"
 			android:id="@+id/field_text_value"
 			android:layout_width="100dp"
 			android:layout_height="@dimen/field_height"
