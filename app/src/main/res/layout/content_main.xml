@@ -25,6 +25,12 @@
 
 		<include
 			app:object="@{meal.bill}"
+			app:field="@={meal.bill.baseWithTax}"
+			app:fieldName="@{`baseWithTax`}"
+			layout="@layout/money_base_field"/>
+
+		<include
+			app:object="@{meal.bill}"
 			app:field="@={meal.bill.tip}"
 			app:fieldName="@{`tip`}"
 			layout="@layout/money_base_field"/>

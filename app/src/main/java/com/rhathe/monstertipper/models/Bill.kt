@@ -1,8 +1,6 @@
 package com.rhathe.monstertipper.models
 
-import android.arch.persistence.room.Ignore
 import android.databinding.*
-import android.util.Log
 import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 
@@ -15,7 +13,7 @@ class Bill(
 
 	private val ONE: BigDecimal = BigDecimal.ONE
 	private val HUN: BigDecimal = BigDecimal(100)
-	private val listOfFields = listOf("total", "base", "tax", "tip", "tipInDollars")
+	private val listOfFields = listOf("total", "base", "tax", "tip", "tipInDollars", "baseWithTax")
 
 	var storedValues = Values(tax=tax?:DEFAULT_TAX, tip=tip?:DEFAULT_TIP)
 	var newValues = storedValues.copy()
@@ -25,6 +23,7 @@ class Bill(
 			when (p1) {
 				BR.total -> calculateWhenCurrentField("total", getTotal())
 				BR.base -> calculateWhenCurrentField("base", getBase())
+				BR.baseWithTax -> calculateWhenCurrentField("baseWithTax", getBase())
 				BR.tax -> calculateWhenCurrentField("tax", getTax())
 				BR.tip -> calculateWhenCurrentField("tip", getTip())
 				BR.tipInDollars -> calculateWhenCurrentField("tipInDollars", getTip())
@@ -70,6 +69,7 @@ class Bill(
 		validateNewValues()
 		registry.notifyChange(this, BR.base)
 		registry.notifyChange(this, BR.tipInDollars)
+		registry.notifyChange(this, BR.baseWithTax)
 	}
 
 	@Bindable
@@ -79,6 +79,18 @@ class Bill(
 		newValues.tax = tax
 		validateNewValues()
 		registry.notifyChange(this, BR.tax)
+	}
+
+	@Bindable
+	fun getBaseWithTax(): BigDecimal { return ((ONE + getTax() / HUN) * getBase()).setScale(2, BigDecimal.ROUND_UP) }
+
+	@Bindable
+	fun setBaseWithTax(baseWithTax: BigDecimal) {
+		// Prevent recursiveness
+		if (currentField != "baseWithTax") return
+
+		val newBase = calculateBaseFromBaseWithTax(baseWithTax)
+		if (newBase != null) setBase(newBase)
 	}
 
 	@Bindable
@@ -112,7 +124,7 @@ class Bill(
 	fun calculateOtherFields(field: String, _n: BigDecimal?) {
 		listOfFields.forEach({x -> if (x != field) fieldMap.remove(x)})
 		val n = _n ?: BigDecimal.ZERO
-		if (field == "base") calculateFromBase(n)
+		if (field == "base" || field == "baseWithTax") calculateFromBase(n)
 		else if (field == "total") calculateFromTotal(n)
 		else if (field == "tip" || field == "tipInDollars") calculateFromTip(n)
 		else if (field == "tax") calculateFromTax(n)
@@ -120,6 +132,11 @@ class Bill(
 
 	fun calculateTipFromTipInDollars(tipInDollars: BigDecimal): BigDecimal? {
 		try { return (tipInDollars * HUN) / getBase() }
+		catch(e: Exception) { return null }
+	}
+
+	fun calculateBaseFromBaseWithTax(baseWithTax: BigDecimal): BigDecimal? {
+		try { return baseWithTax / (ONE + getTax() / HUN) }
 		catch(e: Exception) { return null }
 	}
 
@@ -186,6 +203,7 @@ class Bill(
 		when(field) {
 			"total" -> return "Total ($)"
 			"base" -> return "Base ($)"
+			"baseWithTax" -> return "Base With Tax ($)"
 			"tax" -> return "Tax (%)"
 			"tip" -> return "Tip (%)"
 			"tipInDollars" -> return "Tip In Dollars ($)"
