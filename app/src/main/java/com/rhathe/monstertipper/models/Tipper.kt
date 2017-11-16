@@ -94,12 +94,12 @@ class Tipper(name: String = ""): MoneyBase() {
 
 	fun calculateTotal(total: BigDecimal): BigDecimal {
 		bill.calculateOtherFields("total", total)
-		bill.setTotal(total)
+		bill.total = (total)
 		return total
 	}
 
 	fun addToTotal(total: BigDecimal): BigDecimal {
-		return calculateTotal(total + bill.getTotal())
+		return calculateTotal(total + bill.total)
 	}
 
 	fun calculateDifferenceFromExtras(): BigDecimal {

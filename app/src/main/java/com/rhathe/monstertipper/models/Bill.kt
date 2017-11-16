@@ -21,7 +21,7 @@ class Bill(
 				register = BR.total,
 				calculateFrom = this::calculateFromTotal,
 				calculateFrom0 = {calculateFromTotal()},
-				isEnabled = { getBase().compareTo(BigDecimal.ZERO) != 0 },
+				isEnabled = { base.compareTo(BigDecimal.ZERO) != 0 },
 				notifyList = listOf(BR.total)
 			), "base" to Field(
 				label = "Base ($)",
@@ -45,7 +45,7 @@ class Bill(
 				label = "Tip In Dollars ($)",
 				register = BR.tipInDollars,
 				rootField = "tip",
-				isEnabled = { getBase().compareTo(BigDecimal.ZERO) != 0 }
+				isEnabled = { base.compareTo(BigDecimal.ZERO) != 0 }
 			), "baseWithTax" to Field(
 				label = "Base With Tax ($)",
 				register = BR.baseWithTax,
@@ -87,69 +87,67 @@ class Bill(
 		var fieldObj = fields[field]
 	}
 
-	@Bindable
-	fun getTotal(): BigDecimal { return newValues.total }
+	@get:Bindable
+	var total: BigDecimal
+		get() = newValues.total
+		set(total) {
+			newValues.total = total.setScale(2, BigDecimal.ROUND_UP)
+			onTotalChange?.invoke()
+			validateNewValues()
+			registry.notifyChange(this, BR.total)
+		}
 
-	fun setTotal(total: BigDecimal) {
-		newValues.total = total.setScale(2, BigDecimal.ROUND_UP)
-		onTotalChange?.invoke()
-		validateNewValues()
-		registry.notifyChange(this, BR.total)
-	}
+	@get:Bindable
+	var base: BigDecimal
+		get() = newValues.base
+		set(base) {
+			newValues.base = base.setScale(2, BigDecimal.ROUND_UP)
+			validateNewValues()
+			registry.notifyChange(this, BR.base)
+			registry.notifyChange(this, BR.tipInDollars)
+			registry.notifyChange(this, BR.baseWithTax)
+		}
 
-	@Bindable
-	fun getBase(): BigDecimal { return newValues.base }
+	@get:Bindable
+	var tax: BigDecimal
+		get() = newValues.tax
+		set(tax) {
+			newValues.tax = tax.setScale(maxOf(tax.scale(), 3), BigDecimal.ROUND_UP)
+			validateNewValues()
+			registry.notifyChange(this, BR.tax)
+		}
 
-	fun setBase(base: BigDecimal) {
-		newValues.base = base.setScale(2, BigDecimal.ROUND_UP)
-		validateNewValues()
-		registry.notifyChange(this, BR.base)
-		registry.notifyChange(this, BR.tipInDollars)
-		registry.notifyChange(this, BR.baseWithTax)
-	}
+	@get:Bindable
+	var baseWithTax: BigDecimal
+		get() = ((ONE + tax / HUN) * base).setScale(2, BigDecimal.ROUND_UP)
+		set(baseWithTax) {
+			// Prevent recursiveness
+			if (currentField != "baseWithTax") return
 
-	@Bindable
-	fun getTax(): BigDecimal { return newValues.tax }
+			val newBase = calculateBaseFromBaseWithTax(baseWithTax)
+			if (newBase != null) base = newBase
+		}
 
-	fun setTax(tax: BigDecimal) {
-		newValues.tax = tax.setScale(maxOf(tax.scale(), 3), BigDecimal.ROUND_UP)
-		validateNewValues()
-		registry.notifyChange(this, BR.tax)
-	}
+	@get:Bindable
+	var tip: BigDecimal
+		get() = newValues.tip
+		set(tip) {
+			newValues.tip = tip.setScale(minOf(tip.scale(), 3), BigDecimal.ROUND_UP)
+			validateNewValues()
+			registry.notifyChange(this, BR.tip)
+			registry.notifyChange(this, BR.tipInDollars)
+		}
 
-	@Bindable
-	fun getBaseWithTax(): BigDecimal { return ((ONE + getTax() / HUN) * getBase()).setScale(2, BigDecimal.ROUND_UP) }
+	@get:Bindable
+	var tipInDollars: BigDecimal
+		get() = ((tip * base)/ HUN).setScale(2, BigDecimal.ROUND_UP)
+		set(tipInDollars) {
+			// Prevent recursiveness
+			if (currentField != "tipInDollars") return
 
-	@Bindable
-	fun setBaseWithTax(baseWithTax: BigDecimal) {
-		// Prevent recursiveness
-		if (currentField != "baseWithTax") return
-
-		val newBase = calculateBaseFromBaseWithTax(baseWithTax)
-		if (newBase != null) setBase(newBase)
-	}
-
-	@Bindable
-	fun getTip(): BigDecimal { return newValues.tip }
-
-	fun setTip(tip: BigDecimal) {
-		newValues.tip = tip.setScale(minOf(tip.scale(), 3), BigDecimal.ROUND_UP)
-		validateNewValues()
-		registry.notifyChange(this, BR.tip)
-		registry.notifyChange(this, BR.tipInDollars)
-	}
-
-	@Bindable
-	fun getTipInDollars(): BigDecimal { return ((getTip() * getBase())/ HUN).setScale(2, BigDecimal.ROUND_UP) }
-
-	@Bindable
-	fun setTipInDollars(tipInDollars: BigDecimal) {
-		// Prevent recursiveness
-		if (currentField != "tipInDollars") return
-
-		val newTip = calculateTipFromTipInDollars(tipInDollars)
-		if (newTip != null) setTip(newTip)
-	}
+			val newTip = calculateTipFromTipInDollars(tipInDollars)
+			if (newTip != null) tip = newTip
+		}
 
 	var tipOnTax: Boolean = false
 
@@ -172,49 +170,49 @@ class Bill(
 	}
 
 	fun calculateTipFromTipInDollars(tipInDollars: BigDecimal): BigDecimal? {
-		try { return (tipInDollars * HUN) / getBase() }
+		try { return (tipInDollars * HUN) / base }
 		catch(e: Exception) { return null }
 	}
 
 	fun calculateBaseFromBaseWithTax(baseWithTax: BigDecimal): BigDecimal? {
-		try { return baseWithTax / (ONE + getTax() / HUN) }
+		try { return baseWithTax / (ONE + tax / HUN) }
 		catch(e: Exception) { return null }
 	}
 
-	fun calculateTotal(base: BigDecimal = getBase(), tax: BigDecimal = getTax(), tip: BigDecimal = getTip()) {
-		setTotal(base * taxAndTipFactor(tax, tip))
+	fun calculateTotal(base: BigDecimal = this.base, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {
+		this.total = (base * taxAndTipFactor(tax, tip))
 	}
 
-	fun calculateBase(total: BigDecimal = getTotal(), tax: BigDecimal = getTax(), tip: BigDecimal = getTip()) {
+	fun calculateBase(total: BigDecimal = this.total, tax: BigDecimal = this.tax, tip: BigDecimal = this.tip) {
 		try {
-			setBase(total / taxAndTipFactor(tax, tip))
+			base = (total / taxAndTipFactor(tax, tip))
 		} catch(e: Exception) {}
 	}
 
-	fun calculateTip(total: BigDecimal = getTotal(), base: BigDecimal = getBase(), tax: BigDecimal = getTax()) {
+	fun calculateTip(total: BigDecimal = this.total, base: BigDecimal = this.base, tax: BigDecimal = this.tax) {
 		try {
-			setTip((HUN * total - base * (HUN + tax)).setScale(2, BigDecimal.ROUND_UP) / base.setScale(2, BigDecimal.ROUND_UP))
+			tip = ((HUN * total - base * (HUN + tax)).setScale(2, BigDecimal.ROUND_UP) / base.setScale(2, BigDecimal.ROUND_UP))
 		} catch(e: Exception) {}
 	}
 
-	fun calculateFromBase(base: BigDecimal = getBase()) {
+	fun calculateFromBase(base: BigDecimal = this.base) {
 		calculateTotal(base = base)
 	}
 
-	fun calculateFromTotal(total: BigDecimal = getTotal()) {
-		if (getBase().compareTo(BigDecimal.ZERO) == 0) calculateBase()
+	fun calculateFromTotal(total: BigDecimal = this.total) {
+		if (base.compareTo(BigDecimal.ZERO) == 0) calculateBase()
 		else calculateTip(total = total)
 	}
 
-	fun calculateFromTax(tax: BigDecimal = getTax()) {
+	fun calculateFromTax(tax: BigDecimal = this.tax) {
 		calculateTotal(tax = tax)
 	}
 
-	fun calculateFromTip(tip: BigDecimal = getTip()) {
+	fun calculateFromTip(tip: BigDecimal = this.tip) {
 		calculateTotal(tip = tip)
 	}
 
-	fun taxAndTipFactor(tax: BigDecimal = getTax(), tip: BigDecimal = getTip()): BigDecimal {
+	fun taxAndTipFactor(tax: BigDecimal = this.tax, tip: BigDecimal = this.tip): BigDecimal {
 		if (tipOnTax) return (ONE + tip/HUN) * (ONE + tax/HUN)
 		return ONE + (tip + tax)/HUN
 	}
@@ -225,8 +223,8 @@ class Bill(
 	}
 
 	fun matchTaxAndTip(bill: Bill) {
-		this.setTax(bill.getTax())
-		this.setTip(bill.getTip())
+		this.tax = bill.tax
+		this.tip = bill.tip
 	}
 
 	override fun isFieldEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {

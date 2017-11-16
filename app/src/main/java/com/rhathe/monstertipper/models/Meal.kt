@@ -25,7 +25,7 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		}
 
 		// Calculate remaining from tip and items values
-		var remaining = bill.getTotal() - calculateWillPayersTotal(tippersGrouped["staticPay"])
+		var remaining = bill.total - calculateWillPayersTotal(tippersGrouped["staticPay"])
 		remaining -= calculateDifferenceFromExtrasTotal(tippersGrouped["dynamicPay"])
 
 		// Split the remaining among the eligible tippers
@@ -36,8 +36,8 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 
 		// Calculate tippers' other fields from total
 		tippers.forEach {
-			it.bill.setBase(BigDecimal.ZERO)
-			it.bill.calculateOtherFields("total", it.bill.getTotal())
+			it.bill.base = BigDecimal.ZERO
+			it.bill.calculateOtherFields("total", it.bill.total)
 		}
 
 		// Notify data binding change for even split
@@ -48,7 +48,7 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 
 	@Bindable
 	fun getEvenSplit(): BigDecimal {
-		return bill.getTotal() / BigDecimal.ONE.max(BigDecimal(tippers.size))
+		return bill.total / BigDecimal.ONE.max(BigDecimal(tippers.size))
 	}
 
 	fun notifyTippersChanged() {
