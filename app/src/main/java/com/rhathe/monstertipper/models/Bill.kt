@@ -3,6 +3,7 @@ package com.rhathe.monstertipper.models
 import android.databinding.*
 import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
+import android.util.Log
 
 
 class Bill(
@@ -13,21 +14,52 @@ class Bill(
 
 	private val ONE: BigDecimal = BigDecimal.ONE
 	private val HUN: BigDecimal = BigDecimal(100)
-	private val listOfFields = listOf("total", "base", "tax", "tip", "tipInDollars", "baseWithTax")
+
+	private val fields = mapOf(
+			"total" to Field(
+				label = "Total ($)",
+				register = BR.total,
+				calculateFrom = this::calculateFromTotal,
+				calculateFrom0 = {calculateFromTotal()},
+				isEnabled = { getBase().compareTo(BigDecimal.ZERO) != 0 },
+				notifyList = listOf(BR.total)
+			), "base" to Field(
+				label = "Base ($)",
+				register = BR.base,
+				calculateFrom = this::calculateFromBase,
+				calculateFrom0 = {calculateFromBase()},
+				notifyList = listOf(BR.base, BR.baseWithTax, BR.tipInDollars)
+			), "tax" to Field(
+				label = "Tax (%)",
+				register = BR.tax,
+				calculateFrom = this::calculateFromTax,
+				calculateFrom0 = {calculateFromTax()},
+				notifyList = listOf(BR.tax)
+			), "tip" to Field(
+				label = "Tip (%)",
+				register = BR.tip,
+				calculateFrom = this::calculateFromTip,
+				calculateFrom0 = {calculateFromTip()},
+				notifyList = listOf(BR.tip, BR.tipInDollars)
+			), "tipInDollars" to Field(
+				label = "Tip In Dollars ($)",
+				register = BR.tipInDollars,
+				rootField = "tip",
+				isEnabled = { getBase().compareTo(BigDecimal.ZERO) != 0 }
+			), "baseWithTax" to Field(
+				label = "Base With Tax ($)",
+				register = BR.baseWithTax,
+				rootField = "base"
+			)
+	)
 
 	var storedValues = Values(tax=tax?:DEFAULT_TAX, tip=tip?:DEFAULT_TIP)
 	var newValues = storedValues.copy()
 
 	private val calculateOthersCallback = object: Observable.OnPropertyChangedCallback() {
 		override fun onPropertyChanged(p0: Observable?, p1: Int) {
-			when (p1) {
-				BR.total -> calculateWhenCurrentField("total", getTotal())
-				BR.base -> calculateWhenCurrentField("base", getBase())
-				BR.baseWithTax -> calculateWhenCurrentField("baseWithTax", getBase())
-				BR.tax -> calculateWhenCurrentField("tax", getTax())
-				BR.tip -> calculateWhenCurrentField("tip", getTip())
-				BR.tipInDollars -> calculateWhenCurrentField("tipInDollars", getTip())
-			}
+			var field = fields.filter { (_, v) -> p1 == v.register } .toList().firstOrNull()?.first
+			if (field != null) calculateWhenCurrentField(field)
 		}
 	}
 
@@ -47,8 +79,12 @@ class Bill(
 		disableDynamicRecalculation()
 	}
 
-	fun validateNewValues() {
+	private fun validateNewValues() {
 		storedValues = newValues.copy()
+	}
+
+	private fun setField(field: String) {
+		var fieldObj = fields[field]
 	}
 
 	@Bindable
@@ -76,7 +112,7 @@ class Bill(
 	fun getTax(): BigDecimal { return newValues.tax }
 
 	fun setTax(tax: BigDecimal) {
-		newValues.tax = tax
+		newValues.tax = tax.setScale(maxOf(tax.scale(), 3), BigDecimal.ROUND_UP)
 		validateNewValues()
 		registry.notifyChange(this, BR.tax)
 	}
@@ -117,17 +153,22 @@ class Bill(
 
 	var tipOnTax: Boolean = false
 
-	fun calculateWhenCurrentField(field: String, value: BigDecimal?) {
-		if (field == currentField) calculateOtherFields(field, value)
+	private fun _calculateOtherFields(_field: String, n: BigDecimal? = null) {
+		fields.keys.forEach({x -> if (x != _field) fieldMap.remove(x)})
+		val field = fields[_field]?.rootField ?: _field
+		val cf = fields[field]?.calculateFrom
+
+		if (n != null) fields[field]?.calculateFrom?.invoke(n)
+		else fields[field]?.calculateFrom0?.invoke()
+	}
+
+	fun calculateWhenCurrentField(field: String) {
+		if (field == currentField) _calculateOtherFields(field)
 	}
 
 	fun calculateOtherFields(field: String, _n: BigDecimal?, lockedFields: List<String>? = null) {
-		listOfFields.forEach({x -> if (x != field) fieldMap.remove(x)})
 		val n = _n ?: BigDecimal.ZERO
-		if (field == "base" || field == "baseWithTax") calculateFromBase(n)
-		else if (field == "total") calculateFromTotal(n)
-		else if (field == "tip" || field == "tipInDollars") calculateFromTip(n)
-		else if (field == "tax") calculateFromTax(n)
+		_calculateOtherFields(field, n)
 	}
 
 	fun calculateTipFromTipInDollars(tipInDollars: BigDecimal): BigDecimal? {
@@ -189,26 +230,11 @@ class Bill(
 	}
 
 	override fun isFieldEnabled(field: String, isNullable: Boolean?, value: BigDecimal?): Boolean {
-		when(field) {
-			"total" -> {
-				if (getBase().compareTo(BigDecimal.ZERO) == 0) return false
-			} "tipInDollars" -> {
-				if (getBase().compareTo(BigDecimal.ZERO) == 0) return false
-			}
-		}
-		return true
+		return fields[field]?.isEnabled?.invoke() ?: true
 	}
 
 	override fun getLabel(field: String): String {
-		when(field) {
-			"total" -> return "Total ($)"
-			"base" -> return "Base ($)"
-			"baseWithTax" -> return "Base With Tax ($)"
-			"tax" -> return "Tax (%)"
-			"tip" -> return "Tip (%)"
-			"tipInDollars" -> return "Tip In Dollars ($)"
-		}
-		return super.getLabel(field)
+		return fields[field]?.label ?: super.getLabel(field)
 	}
 
 	data class Values(
@@ -216,6 +242,16 @@ class Bill(
 		var total: BigDecimal = BigDecimal.ZERO.setScale(2),
 		var tax: BigDecimal = DEFAULT_TAX,
 		var tip: BigDecimal = DEFAULT_TIP
+	)
+
+	data class Field(
+		var label: String,
+		var register: Int,
+		var calculateFrom: ((BigDecimal) -> Unit)? = null,
+		var calculateFrom0: (() -> Unit)? = null,
+		var rootField: String? = null,
+		var isEnabled: (() -> Boolean)? = null,
+		var notifyList: List<Int>? = null
 	)
 
 	companion object {
