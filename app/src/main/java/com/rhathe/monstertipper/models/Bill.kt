@@ -83,8 +83,10 @@ class Bill(
 		storedValues = newValues.copy()
 	}
 
-	private fun setField(field: String) {
+	private fun validateAndNotify(field: String) {
 		var fieldObj = fields[field]
+		validateNewValues()
+		fieldObj?.notifyList?.forEach { registry.notifyChange(this, it) }
 	}
 
 	@get:Bindable
@@ -93,8 +95,7 @@ class Bill(
 		set(total) {
 			newValues.total = total.setScale(2, BigDecimal.ROUND_UP)
 			onTotalChange?.invoke()
-			validateNewValues()
-			registry.notifyChange(this, BR.total)
+			validateAndNotify("total")
 		}
 
 	@get:Bindable
@@ -102,10 +103,7 @@ class Bill(
 		get() = newValues.base
 		set(base) {
 			newValues.base = base.setScale(2, BigDecimal.ROUND_UP)
-			validateNewValues()
-			registry.notifyChange(this, BR.base)
-			registry.notifyChange(this, BR.tipInDollars)
-			registry.notifyChange(this, BR.baseWithTax)
+			validateAndNotify("base")
 		}
 
 	@get:Bindable
@@ -113,8 +111,7 @@ class Bill(
 		get() = newValues.tax
 		set(tax) {
 			newValues.tax = tax.setScale(maxOf(tax.scale(), 3), BigDecimal.ROUND_UP)
-			validateNewValues()
-			registry.notifyChange(this, BR.tax)
+			validateAndNotify("tax")
 		}
 
 	@get:Bindable
@@ -133,9 +130,7 @@ class Bill(
 		get() = newValues.tip
 		set(tip) {
 			newValues.tip = tip.setScale(minOf(tip.scale(), 3), BigDecimal.ROUND_UP)
-			validateNewValues()
-			registry.notifyChange(this, BR.tip)
-			registry.notifyChange(this, BR.tipInDollars)
+			validateAndNotify("tip")
 		}
 
 	@get:Bindable
@@ -154,8 +149,6 @@ class Bill(
 	private fun _calculateOtherFields(_field: String, n: BigDecimal? = null) {
 		fields.keys.forEach({x -> if (x != _field) fieldMap.remove(x)})
 		val field = fields[_field]?.rootField ?: _field
-		val cf = fields[field]?.calculateFrom
-
 		if (n != null) fields[field]?.calculateFrom?.invoke(n)
 		else fields[field]?.calculateFrom0?.invoke()
 	}
