@@ -57,7 +57,7 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 
 	fun addTippers() {
 		if (tippers.size >= TIPPER_MAX) return
-		val tipper = Tipper()
+		val tipper = Tipper(meal=this)
 		tippers.add(tipper)
 		notifyTippersChanged()
 	}

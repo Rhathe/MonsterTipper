@@ -5,7 +5,7 @@ import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 
 
-class Tipper(name: String = ""): MoneyBase() {
+class Tipper(name: String = "", meal: Meal = Meal()): MoneyBase() {
 	var bill: Bill = Bill()
 	var onlyConsumed: Boolean = false
 
