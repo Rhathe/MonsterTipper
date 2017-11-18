@@ -84,7 +84,7 @@ class Bill(
 	}
 
 	private fun validateAndNotify(field: String) {
-		var fieldObj = fields[field]
+		val fieldObj = fields[field]
 		validateNewValues()
 		fieldObj?.notifyList?.forEach { registry.notifyChange(this, it) }
 	}
@@ -110,13 +110,13 @@ class Bill(
 	var tax: BigDecimal
 		get() = newValues.tax
 		set(tax) {
-			newValues.tax = tax.setScale(maxOf(tax.scale(), 3), BigDecimal.ROUND_UP)
+			newValues.tax = tax.setScale(minOf(tax.scale(), 3), BigDecimal.ROUND_UP)
 			validateAndNotify("tax")
 		}
 
 	@get:Bindable
 	var baseWithTax: BigDecimal
-		get() = ((ONE + tax / HUN) * base).setScale(2, BigDecimal.ROUND_UP)
+		get() = ((ONE + getScaledTax() / HUN) * base).setScale(2, BigDecimal.ROUND_UP)
 		set(baseWithTax) {
 			// Prevent recursiveness
 			if (currentField != "baseWithTax") return
@@ -135,7 +135,7 @@ class Bill(
 
 	@get:Bindable
 	var tipInDollars: BigDecimal
-		get() = ((tip * base)/ HUN).setScale(2, BigDecimal.ROUND_UP)
+		get() = ((getScaledTip() * base)/ HUN).setScale(2, BigDecimal.ROUND_UP)
 		set(tipInDollars) {
 			// Prevent recursiveness
 			if (currentField != "tipInDollars") return
@@ -153,6 +153,14 @@ class Bill(
 		else fields[field]?.calculateFrom0?.invoke()
 	}
 
+	fun getScaledTax(tax: BigDecimal = this.tax): BigDecimal {
+		return tax.setScale(maxOf(tax.scale(), 3), BigDecimal.ROUND_UP)
+	}
+
+	fun getScaledTip(tip: BigDecimal = this.tip): BigDecimal {
+		return tip.setScale(maxOf(tip.scale(), 3), BigDecimal.ROUND_UP)
+	}
+
 	fun calculateWhenCurrentField(field: String) {
 		if (field == currentField) _calculateOtherFields(field)
 	}
@@ -163,12 +171,15 @@ class Bill(
 	}
 
 	fun calculateTipFromTipInDollars(tipInDollars: BigDecimal): BigDecimal? {
+		val _tipInDollars = tipInDollars.setScale(maxOf(tipInDollars.scale(), base.scale()))
 		try { return (tipInDollars * HUN) / base }
 		catch(e: Exception) { return null }
 	}
 
 	fun calculateBaseFromBaseWithTax(baseWithTax: BigDecimal): BigDecimal? {
-		try { return baseWithTax / (ONE + tax / HUN) }
+		val tax = getScaledTax()
+		val _baseWithTax = baseWithTax.setScale(maxOf(baseWithTax.scale(), tax.scale()))
+		try { return _baseWithTax / (ONE + tax / HUN) }
 		catch(e: Exception) { return null }
 	}
 
@@ -184,7 +195,7 @@ class Bill(
 
 	fun calculateTip(total: BigDecimal = this.total, base: BigDecimal = this.base, tax: BigDecimal = this.tax) {
 		try {
-			tip = ((HUN * total - base * (HUN + tax)).setScale(2, BigDecimal.ROUND_UP) / base.setScale(2, BigDecimal.ROUND_UP))
+			tip = ((HUN * total - base * (HUN + getScaledTax(tax))).setScale(2, BigDecimal.ROUND_UP) / base.setScale(2, BigDecimal.ROUND_UP))
 		} catch(e: Exception) {}
 	}
 
@@ -206,8 +217,10 @@ class Bill(
 	}
 
 	fun taxAndTipFactor(tax: BigDecimal = this.tax, tip: BigDecimal = this.tip): BigDecimal {
-		if (tipOnTax) return (ONE + tip/HUN) * (ONE + tax/HUN)
-		return ONE + (tip + tax)/HUN
+		val _tax = getScaledTax(tax)
+		val _tip = getScaledTip(tip)
+		if (tipOnTax) return (ONE + _tip/HUN) * (ONE + _tax/HUN)
+		return ONE + (_tip + _tax)/HUN
 	}
 
 	fun resetBaseTotal() {
