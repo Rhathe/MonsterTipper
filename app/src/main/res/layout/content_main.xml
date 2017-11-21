@@ -12,36 +12,42 @@
 		android:orientation="vertical">
 
 		<include
+			android:id="@+id/bill_base"
 			app:object="@{meal.bill}"
 			app:field="@={meal.bill.base}"
 			app:fieldName="@{`base`}"
 			layout="@layout/money_base_field"/>
 
 		<include
+			android:id="@+id/bill_tax"
 			app:object="@{meal.bill}"
 			app:field="@={meal.bill.tax}"
 			app:fieldName="@{`tax`}"
 			layout="@layout/money_base_field"/>
 
 		<include
+			android:id="@+id/bill_baseWithTax"
 			app:object="@{meal.bill}"
 			app:field="@={meal.bill.baseWithTax}"
 			app:fieldName="@{`baseWithTax`}"
 			layout="@layout/money_base_field"/>
 
 		<include
+			android:id="@+id/bill_tip"
 			app:object="@{meal.bill}"
 			app:field="@={meal.bill.tip}"
 			app:fieldName="@{`tip`}"
 			layout="@layout/money_base_field"/>
 
 		<include
+			android:id="@+id/bill_tipInDollars"
 			app:object="@{meal.bill}"
 			app:field="@={meal.bill.tipInDollars}"
 			app:fieldName="@{`tipInDollars`}"
 			layout="@layout/money_base_field"/>
 
 		<include
+			android:id="@+id/bill_total"
 			app:object="@{meal.bill}"
 			app:field="@={meal.bill.total}"
 			app:fieldName="@{`total`}"
