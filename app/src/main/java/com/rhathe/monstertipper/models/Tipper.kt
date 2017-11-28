@@ -5,7 +5,7 @@ import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
 
 
-class Tipper(name: String = "", meal: Meal = Meal()): MoneyBase() {
+class Tipper(name: String = "", val meal: Meal = Meal()): MoneyBase() {
 	var bill: Bill = Bill()
 	var onlyConsumed: Boolean = false
 
@@ -29,7 +29,10 @@ class Tipper(name: String = "", meal: Meal = Meal()): MoneyBase() {
 	var minPay: BigDecimal? = null
 
 	var consumedItems: MutableList<Consumable> = mutableListOf()
+		get() = meal.consumables.filter { it.isConsumedBy(this) } .toMutableList()
+
 	var avoidedItems: MutableList<Consumable> = mutableListOf()
+		get() = meal.consumables.filter { it.isAvoidedBy(this) } .toMutableList()
 
 	fun isSpecial(): Boolean {
 		return maxPay != null
@@ -65,14 +68,14 @@ class Tipper(name: String = "", meal: Meal = Meal()): MoneyBase() {
 	}
 
 	fun addConsumedItem(): Consumable {
-		val item = Consumable("Eaten " + (consumedItems.size + 1))
-		consumedItems.add(item)
+		val item = Consumable("Eaten " + (consumedItems.size + 1), meal = meal)
+		item.addAsConsumed(this)
 		return item
 	}
 
 	fun addAvoidedItem(): Consumable {
-		val item = Consumable("Didn't Have " + (avoidedItems.size + 1))
-		avoidedItems.add(item)
+		val item = Consumable("Didn't Have " + (avoidedItems.size + 1), meal = meal)
+		item.addAsAvoided(this)
 		return item
 	}
 

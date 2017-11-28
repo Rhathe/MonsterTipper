@@ -30,8 +30,8 @@ class TipperDetailActivity : BaseActivity() {
 		tipper = CurrentService.getCurrent(Tipper::class.java) as Tipper? ?: Tipper()
 		binding.setVariable(BR.tipper, tipper)
 
-		setupRecyclerView((tipper as Tipper).consumedItems, consumed_items)
-		setupRecyclerView((tipper as Tipper).avoidedItems, avoided_items)
+		setupRecyclerView((tipper as Tipper)::consumedItems::get, consumed_items)
+		setupRecyclerView((tipper as Tipper)::avoidedItems::get, avoided_items)
 	}
 
 	override fun onResume() {
@@ -59,9 +59,10 @@ class TipperDetailActivity : BaseActivity() {
 		else if (type == "consumed") addConsumedItem()
 	}
 
-	fun setupRecyclerView(items: MutableList<Consumable>, v: RecyclerView) {
+	fun setupRecyclerView(getter: () -> MutableList<Consumable>, v: RecyclerView) {
 		val layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
 		v.layoutManager = layoutManager
-		v.adapter = ConsumableItemListAdapter(items)
+		val theTipper = tipper as Tipper
+		v.adapter = ConsumableItemListAdapter(theTipper.meal.consumables, theTipper, getter)
 	}
 }

@@ -23,13 +23,13 @@ open class BaseItemListAdapter(
 	}
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-		val item = items[position]
+		val item = getItemList()[position]
 		holder.bind(item, brId)
 		holder.setBinding(this, BR.adapter)
 	}
 
 	override fun getItemCount(): Int {
-		return items.size
+		return getItemList().size
 	}
 
 	fun goToItem(item: Any, ctx: Context) {
@@ -39,8 +39,12 @@ open class BaseItemListAdapter(
 		ctx.startActivity(intent)
 	}
 
-	fun removeFromList(item: Any) {
+	open fun removeFromList(item: Any) {
 		items.remove(item)
 		this.notifyDataSetChanged()
+	}
+
+	protected open fun getItemList(): MutableList<Any> {
+		return items
 	}
 }

@@ -4,6 +4,7 @@
 
 	<data>
 		<variable name="consumable" type="com.rhathe.monstertipper.models.Consumable"/>
+		<variable name="tipper" type="com.rhathe.monstertipper.models.Tipper"/>
 		<variable name="adapter" type="com.rhathe.monstertipper.adapters.ConsumableItemListAdapter"/>
 	</data>
 
@@ -15,7 +16,7 @@
 			android:layout_width="25dp"
 			android:layout_height="25dp"
 			android:layout_gravity="center"
-			android:onClick="@{() -> adapter.removeFromList(consumable)}"
+			android:onClick="@{() -> adapter.removeFromList(consumable, tipper)}"
 			android:background="@android:drawable/presence_offline"/>
 		<LinearLayout
 			android:orientation="vertical"

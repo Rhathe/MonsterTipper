@@ -11,6 +11,8 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 	@get:Bindable
 	val tippers = mutableListOf<Tipper>()
 
+	val consumables = mutableListOf<Consumable>()
+
 	val onTotalChange: () -> Unit = {
 		// Initialize each tipper to zero
 		tippers.forEach {
