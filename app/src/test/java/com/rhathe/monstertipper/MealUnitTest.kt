@@ -28,8 +28,8 @@ class MealUnitTest {
         consumable.addAsConsumed(tippers[3])
         consumable.addAsConsumed(tippers[6])
 
-        val newTippers = meal.getTippersOnConsumable(consumable, tippers)
-        assertEquals(newTippers, listOf(tippers[3], tippers[6]))
+        val newTippers = meal.getTippersOnConsumable(consumable, tippers).toSet()
+        assertEquals(newTippers, setOf(tippers[3], tippers[6]))
     }
 
     @Test
@@ -38,8 +38,8 @@ class MealUnitTest {
         consumable.addAsAvoided(tippers[3])
         consumable.addAsAvoided(tippers[6])
 
-        val newTippers = meal.getTippersOnConsumable(consumable, tippers)
-        assertEquals(newTippers, listOf(tippers[0], tippers[1], tippers[2], tippers[4], tippers[5]))
+        val newTippers = meal.getTippersOnConsumable(consumable, tippers).toSet()
+        assertEquals(newTippers, setOf(tippers[0], tippers[1], tippers[2], tippers[4], tippers[5]))
     }
 
     @Test
@@ -52,14 +52,14 @@ class MealUnitTest {
         consumable.addAsConsumed(tippers[6])
         consumable.addAsAvoided(tippers[1])
 
-        val newTippers = meal.getTippersOnConsumable(consumable, tippers)
-        assertEquals(newTippers, listOf(tippers[5], tippers[6]))
+        val newTippers = meal.getTippersOnConsumable(consumable, tippers).toSet()
+        assertEquals(newTippers, setOf(tippers[5], tippers[6]))
     }
 
     @Test
     fun getTippersOnConsumable_empty_test() {
         val consumable = Consumable()
-        val newTippers = meal.getTippersOnConsumable(consumable, tippers)
-        assertEquals(newTippers, tippers)
+        val newTippers = meal.getTippersOnConsumable(consumable, tippers).toSet()
+        assertEquals(newTippers, tippers.toSet())
     }
 }

@@ -46,7 +46,7 @@ class BillUnitTest {
 		val bill = Bill()
 		bill.base = BigDecimal.TEN
 		bill.currentField = "tipInDollars"
-		testSetAndGet(bill::tipInDollars, bill::tip, listOf("15", "50", "73.931"), listOf(null, 5, 7.39302))
+		testSetAndGet(bill::tipInDollars, bill::tip, listOf("15", "50.00", "73.931"), listOf(null, 5, 7.39302))
 	}
 
 	@Test
