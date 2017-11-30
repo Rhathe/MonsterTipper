@@ -20,21 +20,21 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 			it.matchMealTaxAndTip(this)
 		}
 
+		// Calculate distribution of items
+		val itemPay = redistributeOnItems(tippers, consumables)
+
 		// Group by staticPayers and dynamicPayers
 		val tippersGrouped = tippers.groupBy {
 			val nullCheck = it.calculateTotalIfWillPay() ?: it.calculateTotalIfOnlyPayForConsumed()
 			if (nullCheck == null) "dynamicPay" else "staticPay"
 		}
 
-		// Calculate remaining from tip and items values
-		var remaining = bill.total - calculateWillPayersTotal(tippersGrouped["staticPay"])
-		remaining -= calculateDifferenceFromExtrasTotal(tippersGrouped["dynamicPay"])
+		// Calculate difference between static pay and itemPay, subtract from total
+		var remaining = bill.total - (itemPay - calculateWillPayersTotal(tippersGrouped["staticPay"]))
+		remaining = remaining.max(BigDecimal.ZERO)
 
 		// Split the remaining among the eligible tippers
 		calculateSplit(tippersGrouped["dynamicPay"], remaining)
-
-		// Redistribute if tippers avoided items
-		redistributeOnAvoidedItems(tippersGrouped["dynamicPay"])
 
 		// Calculate tippers' other fields from total
 		tippers.forEach {
@@ -77,14 +77,6 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		return calculateTippersValuesTotal(tippers, { it.bill.newValues.total })
 	}
 
-	fun calculateDifferenceFromExtrasTotal(tippers: List<Tipper>?): BigDecimal {
-		return calculateTippersValuesTotal(tippers, {
-			val diff = it.calculateDifferenceFromExtras()
-			it.addToTotal(diff)
-			diff
-		})
-	}
-
 	fun calculateTippersValuesTotal(tippers: List<Tipper>?, fn: (Tipper) -> BigDecimal): BigDecimal {
 		return tippers?.map(fn)?.fold(BigDecimal.ZERO){ x, y -> x + y } ?: BigDecimal.ZERO
 	}
@@ -104,19 +96,25 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		distributeToTippers(tippers, remaining)
 	}
 
-	fun redistributeOnAvoidedItems(tippers: List<Tipper>?) {
-		if (tippers?.size?.compareTo(1) == 1) {
-			tippers?.forEach {
-				val tipper = it
-				val avoided = it.calculateDifferenceFromAvoided()
-				if (avoided.compareTo(BigDecimal.ZERO) == 1) {
-					val split = avoided / BigDecimal(tippers.size).setScale(2)
-					tipper.addToTotal(-split)
-					val newTippers = tippers.filter { it != tipper }
-					distributeToTippers(newTippers, split)
-				}
-			}
+	fun redistributeOnItems(tippers: List<Tipper>, consumables: List<Consumable>): BigDecimal {
+		var total = BigDecimal.ZERO
+		consumables.forEach {
+			val consumable = it
+			if (it.tippers.isEmpty()) return@forEach
+			val newTippers = getTippersOnConsumable(it, tippers)
+
+			val ctotal = consumable.bill.newValues.total
+			total += ctotal
+			distributeToTippers(newTippers, ctotal)
 		}
+		return total
+	}
+
+	fun getTippersOnConsumable(consumable: Consumable, tippers: List<Tipper>): List<Tipper> {
+		var newTippers = consumable.tippers.filterValues { it }.keys.toList()
+		if (newTippers.isEmpty())
+			newTippers = tippers.filter { consumable.tippers.getOrElse(it, {true}) != false}
+		return newTippers.filter { tippers.contains(it) }
 	}
 
 	fun destroy() {

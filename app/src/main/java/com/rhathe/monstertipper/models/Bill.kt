@@ -153,6 +153,11 @@ class Bill(
 		else fields[field]?.calculateFrom0?.invoke()
 	}
 
+	fun calculateOtherFields(field: String, _n: BigDecimal?) {
+		val n = _n ?: BigDecimal.ZERO
+		_calculateOtherFields(field, n)
+	}
+
 	fun getScaledTax(tax: BigDecimal = this.tax): BigDecimal {
 		return tax.setScale(maxOf(tax.scale(), 3), BigDecimal.ROUND_UP)
 	}
@@ -163,11 +168,6 @@ class Bill(
 
 	fun calculateWhenCurrentField(field: String) {
 		if (field == currentField) _calculateOtherFields(field)
-	}
-
-	fun calculateOtherFields(field: String, _n: BigDecimal?, lockedFields: List<String>? = null) {
-		val n = _n ?: BigDecimal.ZERO
-		_calculateOtherFields(field, n)
 	}
 
 	fun calculateTipFromTipInDollars(tipInDollars: BigDecimal): BigDecimal? {
