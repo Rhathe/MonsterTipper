@@ -12,7 +12,7 @@ class ConsumableItemListAdapter(consumables: MutableList<Consumable>, val tipper
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
-		holder.bind(tipper, BR.tipper)
+		holder.setBinding(tipper, BR.tipper)
 	}
 
 	override fun getItemList(): MutableList<Any> {
