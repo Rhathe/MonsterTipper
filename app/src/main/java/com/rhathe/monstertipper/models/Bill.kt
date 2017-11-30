@@ -19,36 +19,38 @@ class Bill(
 			"total" to Field(
 				label = "Total ($)",
 				register = BR.total,
+				getter = this::total::get,
 				calculateFrom = this::calculateFromTotal,
-				calculateFrom0 = {calculateFromTotal()},
 				isEnabled = { base.compareTo(BigDecimal.ZERO) != 0 },
 				notifyList = listOf(BR.total)
 			), "base" to Field(
 				label = "Base ($)",
 				register = BR.base,
+				getter = this::base::get,
 				calculateFrom = this::calculateFromBase,
-				calculateFrom0 = {calculateFromBase()},
 				notifyList = listOf(BR.base, BR.baseWithTax, BR.tipInDollars)
 			), "tax" to Field(
 				label = "Tax (%)",
 				register = BR.tax,
+				getter = this::tax::get,
 				calculateFrom = this::calculateFromTax,
-				calculateFrom0 = {calculateFromTax()},
 				notifyList = listOf(BR.tax)
 			), "tip" to Field(
 				label = "Tip (%)",
 				register = BR.tip,
+				getter = this::tip::get,
 				calculateFrom = this::calculateFromTip,
-				calculateFrom0 = {calculateFromTip()},
 				notifyList = listOf(BR.tip, BR.tipInDollars)
 			), "tipInDollars" to Field(
 				label = "Tip In Dollars ($)",
 				register = BR.tipInDollars,
+				getter = this::tipInDollars::get,
 				rootField = "tip",
 				isEnabled = { base.compareTo(BigDecimal.ZERO) != 0 }
 			), "baseWithTax" to Field(
 				label = "Base With Tax ($)",
 				register = BR.baseWithTax,
+				getter = this::baseWithTax::get,
 				rootField = "base"
 			)
 	)
@@ -146,16 +148,18 @@ class Bill(
 
 	var tipOnTax: Boolean = false
 
-	private fun _calculateOtherFields(_field: String, n: BigDecimal? = null) {
+	private fun _calculateOtherFields(_field: String, n: BigDecimal? = null, lockedFields: List<String>? = null) {
 		fields.keys.forEach({x -> if (x != _field) fieldMap.remove(x)})
 		val field = fields[_field]?.rootField ?: _field
-		if (n != null) fields[field]?.calculateFrom?.invoke(n)
-		else fields[field]?.calculateFrom0?.invoke()
+		val fieldObj = fields[field]
+
+		val newN = n ?: fieldObj?.getter?.invoke() ?: BigDecimal.ZERO
+		fields[field]?.calculateFrom?.invoke(newN, lockedFields)
 	}
 
-	fun calculateOtherFields(field: String, _n: BigDecimal?) {
+	fun calculateOtherFields(field: String, _n: BigDecimal?, lockedFields: List<String>? = null) {
 		val n = _n ?: BigDecimal.ZERO
-		_calculateOtherFields(field, n)
+		_calculateOtherFields(field, n, lockedFields)
 	}
 
 	fun getScaledTax(tax: BigDecimal = this.tax): BigDecimal {
@@ -172,7 +176,7 @@ class Bill(
 
 	fun calculateTipFromTipInDollars(tipInDollars: BigDecimal): BigDecimal? {
 		val _tipInDollars = tipInDollars.setScale(maxOf(tipInDollars.scale(), base.scale()))
-		try { return (tipInDollars * HUN) / base }
+		try { return (_tipInDollars * HUN) / base }
 		catch(e: Exception) { return null }
 	}
 
@@ -199,20 +203,22 @@ class Bill(
 		} catch(e: Exception) {}
 	}
 
-	fun calculateFromBase(base: BigDecimal = this.base) {
+	fun calculateFromBase(base: BigDecimal = this.base, _lockedFields: List<String>? = null) {
 		calculateTotal(base = base)
 	}
 
-	fun calculateFromTotal(total: BigDecimal = this.total) {
+	fun calculateFromTotal(total: BigDecimal = this.total, lockedFields: List<String>? = null) {
+		val validField = {x: String -> !(lockedFields?.contains(x) ?: false)}
 		if (base.compareTo(BigDecimal.ZERO) == 0) calculateBase()
-		else calculateTip(total = total)
+		else if (validField("tip")) calculateTip(total = total)
+		else calculateBase()
 	}
 
-	fun calculateFromTax(tax: BigDecimal = this.tax) {
+	fun calculateFromTax(tax: BigDecimal = this.tax, _lockedFields: List<String>? = null) {
 		calculateTotal(tax = tax)
 	}
 
-	fun calculateFromTip(tip: BigDecimal = this.tip) {
+	fun calculateFromTip(tip: BigDecimal = this.tip, _lockedFields: List<String>? = null) {
 		calculateTotal(tip = tip)
 	}
 
@@ -251,8 +257,8 @@ class Bill(
 	data class Field(
 		var label: String,
 		var register: Int,
-		var calculateFrom: ((BigDecimal) -> Unit)? = null,
-		var calculateFrom0: (() -> Unit)? = null,
+		var getter: () -> BigDecimal,
+		var calculateFrom: ((BigDecimal, List<String>?) -> Unit)? = null,
 		var rootField: String? = null,
 		var isEnabled: (() -> Boolean)? = null,
 		var notifyList: List<Int>? = null

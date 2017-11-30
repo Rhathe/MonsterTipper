@@ -15,10 +15,7 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 
 	val onTotalChange: () -> Unit = {
 		// Initialize each tipper to zero
-		tippers.forEach {
-			it.bill.resetBaseTotal()
-			it.matchMealTaxAndTip(this)
-		}
+		tippers.forEach { it.bill.resetBaseTotal() }
 
 		// Calculate distribution of items
 		val itemPay = redistributeOnItems(tippers, consumables)
@@ -39,7 +36,8 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		// Calculate tippers' other fields from total
 		tippers.forEach {
 			it.bill.base = BigDecimal.ZERO
-			it.bill.calculateOtherFields("total", it.bill.total)
+			it.matchMealTaxAndTip(this)
+			it.bill.calculateOtherFields("total", it.bill.total, listOf("tip"))
 		}
 
 		// Notify data binding change for even split

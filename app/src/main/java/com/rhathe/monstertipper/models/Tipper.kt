@@ -96,21 +96,12 @@ class Tipper(name: String = "", val meal: Meal = Meal()): MoneyBase() {
 	}
 
 	fun calculateTotal(total: BigDecimal): BigDecimal {
-		bill.calculateOtherFields("total", total)
-		bill.total = (total)
+		bill.total = total
 		return total
 	}
 
 	fun addToTotal(total: BigDecimal): BigDecimal {
 		return calculateTotal(total + bill.total)
-	}
-
-	fun calculateDifferenceFromExtras(): BigDecimal {
-		return calculateTotalFromItemList(consumedItems)
-	}
-
-	fun calculateDifferenceFromAvoided(): BigDecimal {
-		return calculateTotalFromItemList(avoidedItems)
 	}
 
 	fun calculateTotalFromItemList(items: MutableList<Consumable>): BigDecimal {
