@@ -68,13 +68,13 @@ class Tipper(name: String = "", val meal: Meal = Meal()): MoneyBase() {
 	}
 
 	fun addConsumedItem(): Consumable {
-		val item = Consumable("Eaten " + (consumedItems.size + 1), meal = meal)
+		val item = Consumable(Consumable.getName("consumed"), meal = meal)
 		item.addAsConsumed(this)
 		return item
 	}
 
 	fun addAvoidedItem(): Consumable {
-		val item = Consumable("Didn't Have " + (avoidedItems.size + 1), meal = meal)
+		val item = Consumable(Consumable.getName("avoided"), meal = meal)
 		item.addAsAvoided(this)
 		return item
 	}

@@ -3,6 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<data>
+		<import type="android.view.View"/>
 		<variable name="consumable" type="com.rhathe.monstertipper.models.Consumable"/>
 		<variable name="tipper" type="com.rhathe.monstertipper.models.Tipper"/>
 		<variable name="adapter" type="com.rhathe.monstertipper.adapters.ConsumableItemListAdapter"/>
@@ -16,6 +17,7 @@
 			android:layout_width="25dp"
 			android:layout_height="25dp"
 			android:layout_gravity="center"
+			android:visibility="@{tipper != null ? View.VISIBLE : View.INVISIBLE}"
 			android:onClick="@{() -> adapter.removeFromList(consumable, tipper)}"
 			android:background="@android:drawable/presence_offline"/>
 		<LinearLayout

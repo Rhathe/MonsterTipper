@@ -6,6 +6,8 @@
 
 	<data>
 		<variable name="meal" type="com.rhathe.monstertipper.models.Meal"/>
+		<variable name="activity" type="com.rhathe.monstertipper.ui.Main"/>
+		<variable name="listSwitch" type="android.databinding.ObservableInt"/>
 	</data>
 
 	<android.support.design.widget.CoordinatorLayout
@@ -23,6 +25,8 @@
 			android:layout_height="match_parent">
 			<include
 				app:meal="@{meal}"
+				app:activity="@{activity}"
+				app:listSwitch="@{listSwitch}"
 				layout="@layout/content_main"/>
 		</android.support.v4.widget.NestedScrollView>
 

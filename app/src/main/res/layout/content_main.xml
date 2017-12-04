@@ -4,6 +4,8 @@
 		xmlns:tools="http://schemas.android.com/tools">
 	<data>
 		<variable name="meal" type="com.rhathe.monstertipper.models.Meal"/>
+		<variable name="activity" type="com.rhathe.monstertipper.ui.Main"/>
+		<variable name="listSwitch" type="android.databinding.ObservableInt"/>
 	</data>
 
 	<LinearLayout
@@ -53,7 +55,32 @@
 			app:fieldName="@{`total`}"
 			layout="@layout/money_base_field"/>
 
+		<RadioGroup
+			android:id="@+id/radio_list"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="10dp"
+			android:checkedButton="@+id/radio_tippers"
+			android:gravity="center"
+			android:onCheckedChanged="@{activity.onRadioListChanged}"
+			android:orientation="horizontal">
+
+			<RadioButton android:id="@+id/radio_tippers"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Tippers"/>
+			<RadioButton android:id="@+id/radio_consumables"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Items"/>
+			<RadioButton android:id="@+id/radio_both"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Both"/>
+		</RadioGroup>
+
 		<LinearLayout
+			android:visibility="@{ activity.showList(`tippers`, listSwitch.get()) }"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="horizontal"
@@ -86,14 +113,34 @@
 				android:layout_height="@dimen/field_height"
 				android:onClick="addTippers"
 				android:text="+"/>
-
 		</LinearLayout>
 
-		<android.support.v7.widget.RecyclerView
-			android:id="@+id/tipper_items"
+
+
+		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			tools:listitem="@layout/tipper_item"/>
+			android:orientation="horizontal"
+			android:weightSum="2"
+			android:gravity="end">
+
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/tipper_items"
+				android:layout_weight="@{activity.getListLayoutWeight(listSwitch.get())}"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:visibility="@{ activity.showList(`tippers`, listSwitch.get()) }"
+				tools:listitem="@layout/tipper_item"/>
+
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/consumable_items"
+				android:layout_weight="@{activity.getListLayoutWeight(listSwitch.get())}"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:visibility="@{ activity.showList(`consumables`, listSwitch.get()) }"
+				tools:listitem="@layout/consumable_item"/>
+
+		</LinearLayout>
 
 	</LinearLayout>
 </layout>
