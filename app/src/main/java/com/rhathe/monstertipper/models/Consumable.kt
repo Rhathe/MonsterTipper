@@ -20,6 +20,16 @@ class Consumable(name: String = getName(), val meal: Meal = Meal()): MoneyBase()
 			registry.notifyChange(this, BR.name)
 		}
 
+	@get:Bindable
+	var hasAvoiders = false
+		get() = avoiders.size > 0
+
+	var consumers: MutableList<Tipper> = mutableListOf()
+		get() = tippers.filter { it.value }.keys.toMutableList()
+
+	var avoiders: MutableList<Tipper> = mutableListOf()
+		get() = tippers.filter { !it.value }.keys.toMutableList()
+
 	fun calculateTotal(bill: Bill) {
 		this.bill.matchTaxAndTip(bill)
 		this.bill.calculateFromBase()

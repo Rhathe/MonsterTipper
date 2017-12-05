@@ -16,10 +16,12 @@ open class BaseItemListAdapter(
 		val brId: Int,
 		val activityClass: Class<*>? = null) : RecyclerView.Adapter<ViewHolder>() {
 
+	var binding: ViewDataBinding? = null
+
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val inflater = LayoutInflater.from(parent.context)
-		val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater, layoutId, parent, false)
-		return ViewHolder(this, binding)
+		binding = DataBindingUtil.inflate(inflater, layoutId, parent, false)
+		return ViewHolder(this, binding as ViewDataBinding)
 	}
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {

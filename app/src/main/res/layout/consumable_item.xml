@@ -33,12 +33,23 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="@{`$` + consumable.bill.base}"/>
-		</LinearLayout>
 
-		<android.support.v7.widget.RecyclerView
-			android:id="@+id/c_tipper_items"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			tools:listitem="@layout/consumables_tipper_item"/>
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="@{ consumable.hasAvoiders ? 0xFFFF0000 : 0xFF00FF00 }"
+					android:text="@{ consumable.hasAvoiders ? `-` : `+` }" />
+				<android.support.v7.widget.RecyclerView
+					android:id="@+id/c_tipper_items"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					tools:listitem="@layout/consumables_tipper_item"/>
+			</LinearLayout>
+		</LinearLayout>
 	</LinearLayout>
 </layout>
