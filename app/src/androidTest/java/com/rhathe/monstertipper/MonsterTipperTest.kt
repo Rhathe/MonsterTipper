@@ -13,7 +13,7 @@ import org.junit.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
 
-import com.rhathe.monstertipper.ui.Main
+import com.rhathe.monstertipper.ui.MainActivity
 import junit.framework.AssertionFailedError
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -23,7 +23,7 @@ import org.hamcrest.Matchers.not
 class MonsterTipperTest {
 	@Rule
 	@JvmField
-	val activity = ActivityTestRule<Main>(Main::class.java)
+	val activity = ActivityTestRule<MainActivity>(MainActivity::class.java)
 
 	private fun waitFor(condition: () -> Unit, sleep: Int = 200, checkN: Int = 25) {
 		var lastE: AssertionFailedError? = null

@@ -5,15 +5,13 @@ import com.rhathe.monstertipper.R
 import com.rhathe.monstertipper.models.Consumable
 import com.rhathe.monstertipper.models.Tipper
 import com.rhathe.monstertipper.ui.ConsumableDetailActivity
-import com.rhathe.monstertipper.ui.MainActivity
 
-
-class ConsumableItemListAdapter(consumables: MutableList<Consumable>, val tipper: Tipper?, private val getter: () -> MutableList<Consumable>) :
-		BaseItemListAdapter(consumables as MutableList<Any>, R.layout.consumable_item, BR.consumable, activityClass = MainActivity::class.java) {
+class ConsumablesTipperItemListAdapter(tippers: MutableList<Tipper>, val consumable: Consumable, private val getter: () -> MutableList<Tipper>) :
+		BaseItemListAdapter(tippers as MutableList<Any>, R.layout.consumables_tipper_item, BR.tipper) {
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
-		if (tipper != null) holder.setBinding(tipper, BR.tipper)
+		//holder.setBinding(consumable, BR.consumable)
 	}
 
 	override fun getItemList(): MutableList<Any> {
@@ -21,9 +19,6 @@ class ConsumableItemListAdapter(consumables: MutableList<Consumable>, val tipper
 	}
 
 	fun removeFromList(item: Consumable, tipper: Tipper?) {
-		if (tipper == null) return
-		item.removeTipper(tipper)
-		item.removeSelf()
 		this.notifyDataSetChanged()
 	}
 }

@@ -6,7 +6,7 @@
 
 	<data>
 		<variable name="meal" type="com.rhathe.monstertipper.models.Meal"/>
-		<variable name="activity" type="com.rhathe.monstertipper.ui.Main"/>
+		<variable name="activity" type="com.rhathe.monstertipper.ui.MainActivity"/>
 		<variable name="listSwitch" type="android.databinding.ObservableInt"/>
 	</data>
 
@@ -17,7 +17,7 @@
 		android:clickable="true"
 		android:focusable="true"
 		android:focusableInTouchMode="true"
-		tools:context="com.rhathe.monstertipper.ui.Main">
+		tools:context="com.rhathe.monstertipper.ui.MainActivity">
 
 		<android.support.v4.widget.NestedScrollView
 			android:layout_width="match_parent"

@@ -4,7 +4,7 @@
 		xmlns:tools="http://schemas.android.com/tools">
 	<data>
 		<variable name="meal" type="com.rhathe.monstertipper.models.Meal"/>
-		<variable name="activity" type="com.rhathe.monstertipper.ui.Main"/>
+		<variable name="activity" type="com.rhathe.monstertipper.ui.MainActivity"/>
 		<variable name="listSwitch" type="android.databinding.ObservableInt"/>
 	</data>
 

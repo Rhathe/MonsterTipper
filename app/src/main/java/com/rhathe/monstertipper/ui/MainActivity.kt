@@ -23,7 +23,7 @@ import android.databinding.BindingAdapter
 import com.rhathe.monstertipper.adapters.ConsumableItemListAdapter
 
 
-class Main : BaseActivity() {
+class MainActivity : BaseActivity() {
 	var meal: Meal? = null
 	var binding: ViewDataBinding? = null
 	var listSwitch = ObservableInt(R.id.radio_tippers)

@@ -33,6 +33,7 @@ open class BaseItemListAdapter(
 	}
 
 	fun goToItem(item: Any, ctx: Context) {
+		if (activityClass == null) return
 		val intent = Intent(ctx, activityClass)
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 		CurrentService.setAsCurrent(item)
