@@ -26,7 +26,9 @@
 			android:layout_width="50dp"
 			android:layout_height="50dp"
 			android:layout_gravity="center"
-			android:src="@drawable/monster" />
+			android:src="@drawable/monster"
+			android:tintMode="multiply"
+			android:tint="@{tipper.color}" />
 		<LinearLayout
 			android:orientation="vertical"
 			android:padding="5dp"

@@ -11,7 +11,7 @@ android {
     buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.rhathe.monstertipper"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 6
         versionName "1.0"
@@ -36,7 +36,6 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:design:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
 
     // Room persistence
     compile "android.arch.persistence.room:runtime:$room_version"

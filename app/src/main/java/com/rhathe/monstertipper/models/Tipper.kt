@@ -3,11 +3,13 @@ package com.rhathe.monstertipper.models
 import android.databinding.Bindable
 import com.rhathe.monstertipper.BR
 import java.math.BigDecimal
+import java.util.*
 
 
 class Tipper(name: String = "", val meal: Meal = Meal()): MoneyBase() {
 	var bill: Bill = Bill()
 	var onlyConsumed: Boolean = false
+	var color = getColor()
 
 	@get:Bindable
 	var name: String = if (name.isNotBlank()) name else getName()
@@ -110,10 +112,19 @@ class Tipper(name: String = "", val meal: Meal = Meal()): MoneyBase() {
 
 	companion object {
 		var tipper_name_index = 0
+		val random = Random()
 
 		fun getName(): String {
 			tipper_name_index += 1
 			return "M-Tipper " + tipper_name_index
+		}
+
+		fun getColor(): Int {
+			return 0xff000000.toInt() + 256 * 256 * getRandomHue() + 256 * getRandomHue() + getRandomHue()
+		}
+
+		fun getRandomHue(): Int {
+			return (random.nextInt(256)/20) * 20
 		}
 
 		fun resetNames() {
