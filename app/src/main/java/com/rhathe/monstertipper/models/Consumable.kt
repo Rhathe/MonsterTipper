@@ -17,8 +17,8 @@ class Consumable(name: String = getName(), val meal: Meal = Meal()): MoneyBase()
 		}
 
 	@get:Bindable
-	var hasAvoiders = false
-		get() = avoiders.size > 0
+	var hasConsumers = false
+		get() = consumers.size > 0 || avoiders.size == 0
 
 	var consumers: MutableList<Tipper> = mutableListOf()
 		get() = tippers.filter { it.value }.keys.toMutableList()
@@ -27,7 +27,7 @@ class Consumable(name: String = getName(), val meal: Meal = Meal()): MoneyBase()
 		get() = tippers.filter { !it.value }.keys.toMutableList()
 
 	var listOfTippers: MutableList<Tipper> = mutableListOf()
-		get() = if (hasAvoiders) avoiders else consumers
+		get() = if (hasConsumers) consumers else avoiders
 
 	fun calculateTotal(bill: Bill) {
 		this.bill.matchTaxAndTip(bill)

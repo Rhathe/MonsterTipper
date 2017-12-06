@@ -78,8 +78,8 @@ class TipperDetailActivity : BaseActivity() {
 		val dialog = AlertDialog.Builder(this)
 		val str_items = listOf("New") + (tipper?.meal?.consumables?.map { it.name } ?: listOf())
 		val items = str_items.toTypedArray()
-		dialog.setTitle("Add To Food")
-		dialog.setItems(items, { di: DialogInterface, i: Int ->
+		dialog.setTitle("Add Or Share Food Item")
+		dialog.setItems(items, { _, i: Int ->
 			fn(tipper?.meal?.consumables?.getOrNull(i - 1))
 		})
 

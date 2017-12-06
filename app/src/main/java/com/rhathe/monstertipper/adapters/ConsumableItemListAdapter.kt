@@ -35,9 +35,8 @@ class ConsumableItemListAdapter(consumables: () -> MutableList<Consumable>, val 
 	}
 
 	fun removeFromList(item: Consumable, tipper: Tipper?) {
-		val tippers = if (tipper != null) listOf(tipper) else item.tippers.keys.toList()
-		tippers.forEach { item.removeTipper(it) }
-		item.removeSelf()
+		if (tipper != null) item.removeTipper(tipper)
+		else item.deleteSelf()
 		this.notifyDataSetChanged()
 	}
 }
