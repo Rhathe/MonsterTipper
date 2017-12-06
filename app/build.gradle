@@ -13,7 +13,7 @@ android {
         applicationId "com.rhathe.monstertipper"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 7
+        versionCode 8
         versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
