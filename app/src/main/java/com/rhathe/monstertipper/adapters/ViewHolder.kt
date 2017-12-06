@@ -4,7 +4,7 @@ import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
 
 
-class ViewHolder(private val adapter: BaseItemListAdapter, private val binding: ViewDataBinding) :
+class ViewHolder(private val adapter: BaseItemListAdapter, val binding: ViewDataBinding) :
 		RecyclerView.ViewHolder(binding.root) {
 
 	fun bind(item: Any, brId: Int) {

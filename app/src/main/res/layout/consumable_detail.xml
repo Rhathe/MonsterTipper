@@ -48,12 +48,71 @@
 					layout="@layout/money_base_field"/>
 			</LinearLayout>
 
-			<Button
-				android:layout_width="100dp"
-				android:layout_height="50dp"
-				android:text="Finish"
-				android:layout_gravity="end"
-				android:onClick="finish"/>
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+				<Button
+					android:layout_width="100dp"
+					android:layout_height="50dp"
+					android:text="Delete"
+					android:onClick="delete"/>
+				<Space
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:layout_weight="1" />
+				<Button
+					android:layout_width="100dp"
+					android:layout_height="50dp"
+					android:text="Save"
+					android:layout_gravity="end"
+					android:onClick="finish"/>
+			</LinearLayout>
+
+
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:weightSum="2">
+
+				<LinearLayout
+					android:id="@+id/consumer_list_layout"
+					android:orientation="vertical"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:padding="5dp"
+					android:layout_weight="1">
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Ate" />
+					<android.support.v7.widget.RecyclerView
+						android:id="@+id/consumers_list_view"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						tools:listitem="@layout/tipper_item"/>
+				</LinearLayout>
+
+				<LinearLayout
+					android:id="@+id/avoiders_list_layout"
+					android:orientation="vertical"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:padding="5dp"
+					android:layout_weight="1">
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Avoided" />
+					<android.support.v7.widget.RecyclerView
+						android:id="@+id/avoiders_list_view"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						tools:listitem="@layout/tipper_item"/>
+				</LinearLayout>
+
+			</LinearLayout>
 		</LinearLayout>
 	</ScrollView>
 

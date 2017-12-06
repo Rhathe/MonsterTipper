@@ -44,6 +44,11 @@ class Consumable(name: String = getName(), val meal: Meal = Meal()): MoneyBase()
 		}
 	}
 
+	fun deleteSelf() {
+		tippers.forEach { removeTipper(it.key) }
+		removeSelf()
+	}
+
 	fun removeTipper(tipper: Tipper) {
 		tippers.remove(tipper)
 	}

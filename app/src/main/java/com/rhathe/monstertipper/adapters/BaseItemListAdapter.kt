@@ -17,22 +17,24 @@ open class BaseItemListAdapter(
 		val brId: Int,
 		val activityClass: Class<*>? = null) : RecyclerView.Adapter<ViewHolder>() {
 
-	var binding: ViewDataBinding? = null
-
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val inflater = LayoutInflater.from(parent.context)
-		binding = DataBindingUtil.inflate(inflater, layoutId, parent, false)
-		return ViewHolder(this, binding as ViewDataBinding)
+		val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater, layoutId, parent, false)
+		return ViewHolder(this, binding)
 	}
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 		val item = items()[position]
-		holder.bind(item, brId)
+		bindItemToHolder(holder, item)
 		holder.setBinding(this, BR.adapter)
 	}
 
 	override fun getItemCount(): Int {
 		return items().size
+	}
+
+	open fun bindItemToHolder(holder: ViewHolder, item: Any) {
+		holder.bind(item, brId)
 	}
 
 	fun goToItem(item: Any, ctx: Context) {

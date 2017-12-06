@@ -20,19 +20,23 @@ class ConsumableItemListAdapter(consumables: () -> MutableList<Consumable>, val 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
 		if (tipper != null) holder.setBinding(tipper, BR.tipper)
+	}
 
-		val binding = this.binding as ViewDataBinding
+	override fun bindItemToHolder(holder: ViewHolder, item: Any) {
+		super.bindItemToHolder(holder, item)
+
+		val binding = holder.binding
 		val v = binding.root.c_tipper_items
 		val layoutManager = GridLayoutManager(binding.root.context, 5)
 		v.layoutManager = layoutManager
 
-		val consumable = items()[position] as Consumable
+		val consumable = item as Consumable
 		v.adapter = ConsumablesTipperItemListAdapter(consumable::listOfTippers::get, consumable)
 	}
 
 	fun removeFromList(item: Consumable, tipper: Tipper?) {
-		if (tipper == null) return
-		item.removeTipper(tipper)
+		val tippers = if (tipper != null) listOf(tipper) else item.tippers.keys.toList()
+		tippers.forEach { item.removeTipper(it) }
 		item.removeSelf()
 		this.notifyDataSetChanged()
 	}

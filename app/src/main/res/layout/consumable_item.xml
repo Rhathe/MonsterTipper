@@ -17,7 +17,6 @@
 			android:layout_width="25dp"
 			android:layout_height="25dp"
 			android:layout_gravity="center"
-			android:visibility="@{tipper != null ? View.VISIBLE : View.INVISIBLE}"
 			android:onClick="@{() -> adapter.removeFromList(consumable, tipper)}"
 			android:background="@android:drawable/presence_offline"/>
 		<LinearLayout
