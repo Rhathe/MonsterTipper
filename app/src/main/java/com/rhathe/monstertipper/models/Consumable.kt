@@ -30,6 +30,9 @@ class Consumable(name: String = getName(), val meal: Meal = Meal()): MoneyBase()
 	var avoiders: MutableList<Tipper> = mutableListOf()
 		get() = tippers.filter { !it.value }.keys.toMutableList()
 
+	var listOfTippers: MutableList<Tipper> = mutableListOf()
+		get() = if (hasAvoiders) avoiders else consumers
+
 	fun calculateTotal(bill: Bill) {
 		this.bill.matchTaxAndTip(bill)
 		this.bill.calculateFromBase()

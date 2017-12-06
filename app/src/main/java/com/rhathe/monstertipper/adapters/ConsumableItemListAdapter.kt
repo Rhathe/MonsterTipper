@@ -10,8 +10,12 @@ import com.rhathe.monstertipper.ui.ConsumableDetailActivity
 import kotlinx.android.synthetic.main.consumable_item.view.*
 
 
-class ConsumableItemListAdapter(consumables: MutableList<Consumable>, val tipper: Tipper?, private val getter: () -> MutableList<Consumable>) :
-		BaseItemListAdapter(consumables as MutableList<Any>, R.layout.consumable_item, BR.consumable, activityClass = ConsumableDetailActivity::class.java) {
+class ConsumableItemListAdapter(consumables: () -> MutableList<Consumable>, val tipper: Tipper?) :
+		BaseItemListAdapter(
+				consumables as () -> MutableList<Any>,
+				R.layout.consumable_item,
+				BR.consumable,
+				activityClass = ConsumableDetailActivity::class.java) {
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 		super.onBindViewHolder(holder, position)
@@ -22,12 +26,8 @@ class ConsumableItemListAdapter(consumables: MutableList<Consumable>, val tipper
 		val layoutManager = GridLayoutManager(binding.root.context, 5)
 		v.layoutManager = layoutManager
 
-		val consumable = getItemList()[position] as Consumable
-		v.adapter = ConsumablesTipperItemListAdapter(mutableListOf(), consumable)
-	}
-
-	override fun getItemList(): MutableList<Any> {
-		return getter() as MutableList<Any>
+		val consumable = items()[position] as Consumable
+		v.adapter = ConsumablesTipperItemListAdapter(consumable::listOfTippers::get, consumable)
 	}
 
 	fun removeFromList(item: Consumable, tipper: Tipper?) {

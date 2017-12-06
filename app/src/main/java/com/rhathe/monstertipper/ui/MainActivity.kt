@@ -134,10 +134,10 @@ class MainActivity : BaseActivity() {
 		CurrentService.setAsCurrent(meal)
 		binding?.setVariable(BR.meal, meal)
 
-		val tadapter = TipperItemListAdapter(meal.tippers)
+		val tadapter = TipperItemListAdapter(meal::tippers::get)
 		tipper_items.adapter = tadapter
 
-		val cadapter = ConsumableItemListAdapter(meal.consumables, null, meal::consumables::get)
+		val cadapter = ConsumableItemListAdapter(meal::consumables::get, null)
 		consumable_items.adapter = cadapter
 
 		// Number of tippers needs to be updated

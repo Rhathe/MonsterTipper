@@ -24,4 +24,8 @@ class ConsumableDetailActivity : BaseActivity() {
 		item = CurrentService.getCurrent(Consumable::class.java) as Consumable? ?: Consumable()
 		binding.setVariable(BR.consumable, item)
 	}
+
+	fun setupRecyclerView() {
+
+	}
 }

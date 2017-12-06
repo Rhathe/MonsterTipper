@@ -63,6 +63,6 @@ class TipperDetailActivity : BaseActivity() {
 		val layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
 		v.layoutManager = layoutManager
 		val theTipper = tipper as Tipper
-		v.adapter = ConsumableItemListAdapter(theTipper.meal.consumables, theTipper, getter)
+		v.adapter = ConsumableItemListAdapter(getter, theTipper)
 	}
 }

@@ -8,10 +8,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.rhathe.monstertipper.BR
+import com.rhathe.monstertipper.models.Consumable
 import com.rhathe.monstertipper.services.CurrentService
 
 open class BaseItemListAdapter(
-		val items: MutableList<Any>,
+		val items: () -> MutableList<Any>,
 		val layoutId: Int,
 		val brId: Int,
 		val activityClass: Class<*>? = null) : RecyclerView.Adapter<ViewHolder>() {
@@ -25,13 +26,13 @@ open class BaseItemListAdapter(
 	}
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-		val item = getItemList()[position]
+		val item = items()[position]
 		holder.bind(item, brId)
 		holder.setBinding(this, BR.adapter)
 	}
 
 	override fun getItemCount(): Int {
-		return getItemList().size
+		return items().size
 	}
 
 	fun goToItem(item: Any, ctx: Context) {
@@ -43,11 +44,7 @@ open class BaseItemListAdapter(
 	}
 
 	open fun removeFromList(item: Any) {
-		items.remove(item)
+		items().remove(item)
 		this.notifyDataSetChanged()
-	}
-
-	protected open fun getItemList(): MutableList<Any> {
-		return items
 	}
 }
