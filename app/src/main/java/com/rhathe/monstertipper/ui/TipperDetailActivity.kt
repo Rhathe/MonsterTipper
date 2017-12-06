@@ -17,6 +17,8 @@ import com.rhathe.monstertipper.models.Consumable
 import com.rhathe.monstertipper.models.Tipper
 import com.rhathe.monstertipper.services.CurrentService
 import kotlinx.android.synthetic.main.tipper_detail.*
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
 
 
 class TipperDetailActivity : BaseActivity() {
@@ -41,11 +43,17 @@ class TipperDetailActivity : BaseActivity() {
 	}
 
 	fun addConsumedItem(v: View? = null) {
-		addItem(tipper?.addConsumedItem(), consumed_items)
+		addItemDialog { item: Consumable? ->
+			item?.addAsConsumed(tipper as Tipper)
+			addItem(item ?: tipper?.addConsumedItem(), consumed_items)
+		}
 	}
 
 	fun addAvoidedItem(v: View? = null) {
-		addItem(tipper?.addAvoidedItem(), avoided_items)
+		addItemDialog { item: Consumable? ->
+			item?.addAsAvoided(tipper as Tipper)
+			addItem(item ?: tipper?.addAvoidedItem(), consumed_items)
+		}
 	}
 
 	fun addItem(item: Consumable?, v: RecyclerView) {
@@ -64,5 +72,18 @@ class TipperDetailActivity : BaseActivity() {
 		v.layoutManager = layoutManager
 		val theTipper = tipper as Tipper
 		v.adapter = ConsumableItemListAdapter(getter, theTipper)
+	}
+
+	fun addItemDialog(fn: (Consumable?) -> Unit) {
+		val dialog = AlertDialog.Builder(this)
+		val str_items = listOf("New") + (tipper?.meal?.consumables?.map { it.name } ?: listOf())
+		val items = str_items.toTypedArray()
+		dialog.setTitle("Add To Food")
+		dialog.setItems(items, { di: DialogInterface, i: Int ->
+			fn(tipper?.meal?.consumables?.getOrNull(i - 1))
+		})
+
+		val alert = dialog.create()
+		alert.show()
 	}
 }

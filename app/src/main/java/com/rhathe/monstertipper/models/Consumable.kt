@@ -9,10 +9,6 @@ class Consumable(name: String = getName(), val meal: Meal = Meal()): MoneyBase()
 	val bill: Bill = Bill()
 	val tippers: HashMap<Tipper, Boolean> = hashMapOf()
 
-	init {
-		meal.consumables.add(this)
-	}
-
 	@get:Bindable
 	var name = name
 		set(name) {
@@ -71,6 +67,10 @@ class Consumable(name: String = getName(), val meal: Meal = Meal()): MoneyBase()
 
 	fun addAsAvoided(tipper: Tipper) {
 		addTipper(tipper, false)
+	}
+
+	fun addToMeal() {
+		if (this !in meal.consumables) meal.consumables.add(this)
 	}
 
 	companion object {

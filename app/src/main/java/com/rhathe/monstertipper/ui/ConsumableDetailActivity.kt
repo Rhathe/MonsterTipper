@@ -46,4 +46,9 @@ class ConsumableDetailActivity : BaseActivity() {
 		item?.deleteSelf()
 		finish(v)
 	}
+
+	fun save(@Suppress("UNUSED_PARAMETER") v: View) {
+		item?.addToMeal()
+		finish(v)
+	}
 }
