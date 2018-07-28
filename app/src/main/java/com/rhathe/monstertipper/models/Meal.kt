@@ -18,20 +18,28 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 		tippers.forEach { it.bill.resetBaseTotal() }
 
 		// Calculate distribution of items
-		val itemPay = redistributeOnItems(tippers, consumables)
+		var itemPay = redistributeOnItems(tippers, consumables)
 
-		// Group by staticPayers and dynamicPayers
+		// Group by willPay, onlyConsumed, and remaining
 		val tippersGrouped = tippers.groupBy {
-			val nullCheck = it.calculateTotalIfWillPay() ?: it.calculateTotalIfOnlyPayForConsumed()
-			if (nullCheck == null) "dynamicPay" else "staticPay"
+			when {
+				it.willPay != null -> "willPay"
+				it.onlyConsumed -> "onlyConsumed"
+				else -> "remaining"
+			}
 		}
 
-		// Calculate difference between static pay and itemPay, subtract from total
-		var remaining = bill.total - (itemPay - calculateWillPayersTotal(tippersGrouped["staticPay"]))
+		// Remove willPayers itemPay, recalculate willPayers totals
+		itemPay -= calculateWillPayersTotal(tippersGrouped["willPay"])
+		tippersGrouped["willPay"]?.forEach { it.calculateTotalIfWillPay() }
+
+		// subtract from total the itemPAy and the new willPayers total
+		var remaining = bill.total - itemPay - calculateWillPayersTotal(tippersGrouped["willPay"])
+
 		remaining = remaining.max(BigDecimal.ZERO)
 
 		// Split the remaining among the eligible tippers
-		calculateSplit(tippersGrouped["dynamicPay"], remaining)
+		calculateSplit(tippersGrouped["remaining"], remaining)
 
 		// Calculate tippers' other fields from total
 		tippers.forEach {
@@ -97,11 +105,10 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 	fun redistributeOnItems(tippers: List<Tipper>, consumables: List<Consumable>): BigDecimal {
 		var total = BigDecimal.ZERO
 		consumables.forEach {
-			val consumable = it
 			if (it.tippers.isEmpty()) return@forEach
 			val newTippers = getTippersOnConsumable(it, tippers)
 
-			val ctotal = consumable.bill.newValues.total
+			val ctotal = it.bill.newValues.total
 			total += ctotal
 			distributeToTippers(newTippers, ctotal)
 		}
@@ -109,7 +116,10 @@ class Meal(tax: BigDecimal? = null, tip: BigDecimal? = null): MoneyBase() {
 	}
 
 	fun getTippersOnConsumable(consumable: Consumable, tippers: List<Tipper>): List<Tipper> {
+		// First see if we have a list of tippers that had these consumables
 		var newTippers = consumable.tippers.filterValues { it }.keys.toList()
+
+		// Otherwise filter out avoided tippers
 		if (newTippers.isEmpty())
 			newTippers = tippers.filter { consumable.tippers.getOrElse(it, {true}) != false}
 		return newTippers.filter { tippers.contains(it) }
